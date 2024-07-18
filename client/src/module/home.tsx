@@ -22,7 +22,13 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
 
   const handleChange = (e: { target: { name: string; value: string } }) => {
     const { name, value } = e.target;
-    setURL({ ...URL, [name]: value });
+    setURL((prevURL) => {
+      const updatedURL = { ...prevURL, [name]: value };
+      if (!updatedURL.long) {
+        setCustom(false);
+      }
+      return updatedURL;
+    });
   };
 
   const ShortenLongUrl = async (e: FormEvent<HTMLFormElement>) => {
@@ -70,28 +76,24 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
       description: "URL Copied to the clipboard",
     });
   };
-
   return (
-    <div
-      className=" min-h-[calc(100vh-150px)]
- 
-    "
-    >
+    <div className=" min-h-[calc(100vh)]">
       <h1
-        className={`scroll-m-20 text-center mt-20 my-10 poppins-extrabold tracking-tight text-2xl sm:text-4xl lg:text-6xl
-      `}
+        className={`scroll-m-20 text-center  mb-10 poppins-extrabold tracking-tight text-3xl sm:text-4xl lg:text-6xl
+        ${Iscustom ? "mt-14 duration-500" : "duration-500 mt-20"}
+        `}
       >
-        {URL.long ? (
+        {URL?.long ? (
           <span
-            className=" sm:text-4xl text-xl px-4 font-bold tracking-normal  duration-300 "
+            className={` sm:text-4xl text-xl  font-bold tracking-normal 
+          ${ShortUrl ? " invisible  duration-0" : "   duration-300  visible"}
+         
+          `}
           >
             Shorten unlimited URLs here for free!
           </span>
         ) : (
-          <span
-            className="duration-300
-          "
-          >
+          <span className="duration-300">
             Quick Link : A Rapid URL Shortener
           </span>
         )}
@@ -112,7 +114,13 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
               />
               <div className=" flex my-2 gap-x-3 items-center">
                 <Checkbox
+                  checked={Iscustom && URL.long ? true : false}
                   onCheckedChange={() => {
+                    if (!URL.long)
+                      return toast({
+                        variant: "destructive",
+                        description: "Enter URL first!",
+                      });
                     if (URL.custom) setURL({ ...URL, custom: "" });
                     setCustom(!Iscustom);
                   }}
@@ -136,13 +144,36 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
                 value={URL.custom}
                 onChange={handleChange}
                 name="custom"
+                autoComplete="off"
                 placeholder="Enter custom backhalf "
-                className=" w-60 my-2 border-slate-500 focus:border-white"
+                className=" sm:min-w-80 w-60 my-2 border-slate-500 focus:border-white"
               />
+              <h1
+                className={`  text-xs text-red-500  transform
+                ${
+                  Iscustom && URL.custom.length < 9
+                    ? " duration-300 translate-y-0 visible "
+                    : "-translate-y-2 invisible duration-75 "
+                }
+              `}
+              >
+                min 8 charcaters
+              </h1>
+              {Iscustom && (
+                <div className=" mt-2  ">
+                  <h1 className=" text-sm">
+                    Your custom URL will look like
+                  </h1>
+                  <input
+                    value={`${Server.split("//")[1]}/${URL.custom}`}
+                    readOnly
+                    className="text-sm my-2 bg-foreground/10 sm:min-w-80 w-60  rounded-lg p-2 pr-4"
+                  />
+                </div>
+              )}
             </div>
-
             <div
-              className={`duration-200 ${
+              className={`duration-200  ${
                 !Iscustom ? "-translate-y-14  " : "translate-y-0  "
               }`}
             >
@@ -157,10 +188,10 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
           </form>
         ) : (
           !loader && (
-            <div className=" flex justify-center items-center flex-col my-10">
+            <div className=" flex  justify-center items-center flex-col my-10">
               <div className=" flex flex-col justify-center items-center ">
                 <h2 className="scroll-m-10  pb-2 sm:text-3xl text-xl font-semibold tracking-tight first:mt-0">
-                  Your {URL.custom && "custom"} shortened URL is
+                  Here is your {URL.custom && "custom"} shortened URL
                 </h2>
                 <div className="flex w-full max-w-sm my-5 items-center justify-center  space-x-2">
                   <Input
@@ -193,12 +224,10 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
       <a
         target="_blank"
         href={Portfolio}
-        className=" absolute sm:hidden text-sm bottom-3 left-[50%] translate-x-[-50%] translate-y-[-50%]"
+        className=" absolute  sm:hidden text-sm bottom-3 left-[50%] translate-x-[-50%] translate-y-[-50%]"
       >
         Developed by
-        <span className=" cursor-pointer  ml-1  text-blue-800 dark:text-blue-400   font-bold">
-          Sooraj
-        </span>
+        <span className=" cursor-pointer  ml-1 font-semibold">Sooraj</span>
       </a>
     </div>
   );
