@@ -93,9 +93,7 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
             Shorten unlimited URLs here for free!
           </span>
         ) : (
-          <span className="duration-300">
-            Quick Link : A Rapid URL Shortener
-          </span>
+          <span>Quick Link : A Rapid URL Shortener</span>
         )}
       </h1>
 
@@ -161,9 +159,7 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
               </h1>
               {Iscustom && (
                 <div className=" mt-2  ">
-                  <h1 className=" text-sm">
-                    Your custom URL will look like
-                  </h1>
+                  <h1 className=" text-sm">Your custom URL will look like</h1>
                   <input
                     value={`${Server.split("//")[1]}/${URL.custom}`}
                     readOnly

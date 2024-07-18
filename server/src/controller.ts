@@ -4,7 +4,7 @@ import { random } from "./random";
 import { Validator } from "./validate";
 import { Document, Model } from "mongoose";
 
-const Link = process.env.REDIRECT_LINK;
+const Link = process.env.LINK!;
 
 interface UrlDocument extends Document {
   short: string;
@@ -116,5 +116,5 @@ const updateUrlHistory = async (
 };
 
 export const Redirect = (_: Request, res: Response): void => {
-  res.redirect(Link || "");
+  res.redirect(Link);
 };
