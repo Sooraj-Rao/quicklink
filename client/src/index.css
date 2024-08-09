@@ -80,16 +80,3 @@ body {
   overflow: hidden;
 }
 
-.poppins-medium {
-  font-family: "Poppins", sans-serif;
-  font-weight: 500;
-  font-style: normal;
-}
-
-
-
-.poppins-extrabold {
-  font-family: "Poppins", sans-serif;
-  font-weight: 800;
-  font-style: normal;
-}

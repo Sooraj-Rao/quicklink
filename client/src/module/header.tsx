@@ -1,12 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "./theme.toggle";
 import { AiOutlineBug } from "react-icons/ai";
-import { FaGithub } from "react-icons/fa";
 
 const Header = ({
   data,
 }: {
-  data: { contact: string; main: string; github: string };
+  data: { contact: string; main: string; };
 }) => {
   return (
     <header className=" flex justify-between   shadow-md shadow-white  items-center px-4 sm:px-10  sm:py-4 mt-5 sm:mt-0  dark:shadow-none    poppins-medium ">
@@ -30,14 +29,6 @@ const Header = ({
           >
             <AiOutlineBug size={20} />
             <span>Report an Issue</span>
-          </Button>
-        </a>
-        <a href={data.github} target="_blank">
-          <Button
-            variant="ghost"
-            className=" py-2 px-3   rounded  md:flex hidden items-center gap-x-1"
-          >
-            <FaGithub size={20} />
           </Button>
         </a>
         <ModeToggle />

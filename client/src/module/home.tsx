@@ -4,9 +4,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/use-toast";
 import axios from "axios";
-import { Copy } from "lucide-react";
+import { Copy, Loader } from "lucide-react";
 import { FormEvent, useRef, useState } from "react";
 import { Validator } from "./validate.hook";
+import { SomeData } from "@/data/linkData";
 
 const Home = ({ Portfolio }: { Portfolio: string }) => {
   const [Iscustom, setCustom] = useState(false);
@@ -79,7 +80,7 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
   return (
     <div className=" min-h-[calc(100vh)]">
       <h1
-        className={`scroll-m-20 text-center  mb-10 poppins-extrabold tracking-tight text-3xl sm:text-4xl lg:text-6xl
+        className={`scroll-m-20 text-center  mb-10 font-extrabold tracking-tight text-3xl sm:text-4xl lg:text-6xl
         ${Iscustom ? "mt-14 duration-500" : "duration-500 mt-20"}
         `}
       >
@@ -93,7 +94,9 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
             Shorten unlimited URLs here for free!
           </span>
         ) : (
-          <span>Quick Link : A Rapid URL Shortener</span>
+          <span className=" duration-75">
+            Quick Link : A Rapid URL Shortener
+          </span>
         )}
       </h1>
 
@@ -159,7 +162,9 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
               </h1>
               {Iscustom && (
                 <div className=" mt-2  ">
-                  <h1 className=" text-sm">Your custom URL will look like</h1>
+                  <h1 className=" text-sm font-semibold">
+                    Your custom URL will look like
+                  </h1>
                   <input
                     value={`${Server.split("//")[1]}/${URL.custom}`}
                     readOnly
@@ -173,18 +178,25 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
                 !Iscustom ? "-translate-y-14  " : "translate-y-0  "
               }`}
             >
-              <Button type="submit" className="  mt-4" variant="default">
+              <Button
+                type="submit"
+                disabled={loader}
+                className=" disabled:opacity-70  mt-4"
+              >
                 {!loader ? (
-                  "Shorten URL"
+                  "Submit"
                 ) : (
-                  <span className=" h-5 w-5 border-2 border-t-transparent dark:border-t-white border-white dark:border-black rounded-full  animate-spin"></span>
+                  <>
+                    Shortening..
+                    <Loader size={20} className="ml-1 animate-spin" />
+                  </>
                 )}
               </Button>
             </div>
           </form>
         ) : (
           !loader && (
-            <div className=" flex  justify-center items-center flex-col my-10">
+            <div className=" flex  justify-center items-center flex-col my-3">
               <div className=" flex flex-col justify-center items-center ">
                 <h2 className="scroll-m-10  pb-2 sm:text-3xl text-xl font-semibold tracking-tight first:mt-0">
                   Here is your {URL.custom && "custom"} shortened URL
@@ -217,6 +229,22 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
           )
         )}
       </div>
+      <div className="hidden mt-10 justify-center sm:flex">
+        <div className="shadow-xl px-7 py-4 rounded-lg  text-center">
+          <span className="">
+            For temporary links and QR code, check out&nbsp;
+          </span>
+
+          <a
+            target="_blank"
+            href={SomeData.nextlink}
+            className="text-red-600 font-semibold hover:underline"
+          >
+            NextLink!
+          </a>
+        </div>
+      </div>
+
       <a
         target="_blank"
         href={Portfolio}
