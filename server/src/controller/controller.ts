@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { CustomUrl, NormalUrl } from "./model";
-import { random } from "./random";
-import { Validator } from "./validate";
+
 import { Document, Model } from "mongoose";
+import { CustomUrl, NormalUrl } from "../models";
+import { RandomGenerator, Validator } from "../utils/helper";
 
 const Link = process.env.LINK!;
 
@@ -39,7 +39,7 @@ export const AddURL = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    let shortUrl = random();
+    let shortUrl = RandomGenerator();
     if (short) {
       const newUrl = new CustomUrl({ short, long });
       await newUrl.save();

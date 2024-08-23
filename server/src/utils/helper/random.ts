@@ -1,4 +1,4 @@
-export const random = () => {
+ export const RandomGenerator = () => {
   let caps = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   let small = caps.toLowerCase();
   let total = caps + small;

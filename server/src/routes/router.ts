@@ -1,5 +1,5 @@
 import express from "express";
-import { AddURL, GetCount, GetURL, Redirect } from "./controller";
+import { AddURL, GetCount, GetURL, Redirect } from "../controller";
 export const router = express.Router();
 
 router.post("/add", AddURL);
