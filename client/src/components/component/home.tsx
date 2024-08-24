@@ -1,13 +1,15 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/use-toast";
 import axios from "axios";
-import { Copy, Loader } from "lucide-react";
+import { Copy, Loader, Stars } from "lucide-react";
 import { FormEvent, useRef, useState } from "react";
-import { Validator } from "./validate.hook";
-import { SomeData } from "@/data/linkData";
+import { Validator } from "@/app/util/validate.hook";
+
+export const Server = process.env.NEXT_PUBLIC_SERVER!;
 
 const Home = ({ Portfolio }: { Portfolio: string }) => {
   const [Iscustom, setCustom] = useState(false);
@@ -18,8 +20,6 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
     long: "",
     custom: "",
   });
-
-  const Server = import.meta.env.VITE_SERVER;
 
   const handleChange = (e: { target: { name: string; value: string } }) => {
     const { name, value } = e.target;
@@ -47,18 +47,17 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
       setloader(true);
       const newReq = { long: URL.long, custom: URL.custom, key: key };
       const res = await axios.post(`${Server}/add`, key ? newReq : URL);
-      const { success, message } = res.data;
-      setloader(false);
-      if (success) {
-        const shortUrl = Server + "/" + res.data.short;
-        setShortUrl(shortUrl);
-      } else {
+      const { success, message, data } = res.data;
+      if (!success)
         toast({
           variant: "destructive",
           description: message,
         });
-      }
+
+      const shortUrl = Server + "/" + data.short;
+      setShortUrl(shortUrl);
     } catch (error) {
+      console.log(error);
       toast({
         variant: "destructive",
         description: "Failed to shorten URL",
@@ -77,6 +76,7 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
       description: "URL Copied to the clipboard",
     });
   };
+
   return (
     <div className=" min-h-[calc(100vh)]">
       <h1
@@ -87,14 +87,14 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
         {URL?.long ? (
           <span
             className={` sm:text-4xl text-xl  font-bold tracking-normal 
-          ${ShortUrl ? " invisible  duration-0" : "   duration-300  visible"}
+          ${ShortUrl ? " invisible  duration-0" : " duration-75  visible"}
          
           `}
           >
             Shorten unlimited URLs here for free!
           </span>
         ) : (
-          <span className=" duration-75">
+          <span className=" duration-75s">
             Quick Link : A Rapid URL Shortener
           </span>
         )}
@@ -111,7 +111,7 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
                 name="long"
                 type="text"
                 placeholder="Your long URL here.."
-                className=" mt-2  sm:min-w-80 w-60 border-slate-500 focus:border-white"
+                className=" mt-2  sm:min-w-80 w-60 "
               />
               <div className=" flex my-2 gap-x-3 items-center">
                 <Checkbox
@@ -147,10 +147,10 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
                 name="custom"
                 autoComplete="off"
                 placeholder="Enter custom backhalf "
-                className=" sm:min-w-80 w-60 my-2 border-slate-500 focus:border-white"
+                className=" mt-2  sm:min-w-80 w-60 "
               />
               <h1
-                className={`  text-xs text-red-500  transform
+                className={`  text-xs text-red-500 ml-2 mt-2 transform
                 ${
                   Iscustom && URL.custom.length < 9
                     ? " duration-300 translate-y-0 visible "
@@ -161,14 +161,15 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
                 min 8 charcaters
               </h1>
               {Iscustom && (
-                <div className=" mt-2  ">
-                  <h1 className=" text-sm font-semibold">
+                <div className=" mt-6  shadow-lg p-3  border border-foreground/10  rounded-md">
+                  <h1 className=" text-sm font-semibold text-center ">
                     Your custom URL will look like
                   </h1>
-                  <input
-                    value={`${Server.split("//")[1]}/${URL.custom}`}
+                  <Input
+                    value={`${Server?.split("//")[1]}/${URL.custom}`}
                     readOnly
-                    className="text-sm my-2 bg-foreground/10 sm:min-w-80 w-60  rounded-lg p-2 pr-4"
+                    disabled
+                    className="mt-3 cursor-not-allowed text-foreground  border border-foreground/10"
                   />
                 </div>
               )}
@@ -199,7 +200,7 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
             <div className=" flex  justify-center items-center flex-col my-3">
               <div className=" flex flex-col justify-center items-center ">
                 <h2 className="scroll-m-10  pb-2 sm:text-3xl text-xl font-semibold tracking-tight first:mt-0">
-                  Here is your {URL.custom && "custom"} shortened URL
+                  Here is your {URL.custom && "custom"} shortened URL 🎉
                 </h2>
                 <div className="flex w-full max-w-sm my-5 items-center justify-center  space-x-2">
                   <Input
@@ -216,33 +217,21 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
                 </div>
               </div>
               <Button
-                className=" mt-10"
+                className=" mt-10 flex items-center gap-x-2"
                 onClick={() => {
                   setShortUrl("");
                   setURL({ long: "", custom: "" });
                   setCustom(false);
                 }}
               >
-                Create another
+                <span>Create another</span>
+                <span>
+                  <Stars size={16} />
+                </span>
               </Button>
             </div>
           )
         )}
-      </div>
-      <div className="hidden mt-10 justify-center sm:flex">
-        <div className="shadow-xl px-7 py-4 rounded-lg  text-center">
-          <span className="">
-            For temporary links and QR code, check out&nbsp;
-          </span>
-
-          <a
-            target="_blank"
-            href={SomeData.nextlink}
-            className="text-red-600 font-semibold hover:underline"
-          >
-            NextLink!
-          </a>
-        </div>
       </div>
 
       <a

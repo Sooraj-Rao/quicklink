@@ -14,15 +14,18 @@ export const Validator = (URL: {
     return { message: "Invalid URL format", error: true };
   }
 
-  if ((short && !isValidCustom(short)) || (short && short.length < 8)) {
-    return { message: "Invalid custom backhalf format", error: true };
+  if (short && !isValidCustom(short)) {
+    return { message: "Invalid custom URL", error: true };
+  }
+  if (short && short.length < 8) {
+    return { message: "Custom URL is too short", error: true };
   }
 
   return { error: false, message: null };
 };
 
 const isValidURL = (url: string): boolean => {
-  if (!url || url.length < 8 || !url.includes(".")) {
+  if (!url || !url.includes(".")) {
     return false;
   }
   return true;

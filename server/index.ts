@@ -7,7 +7,7 @@ import { router } from "./src/routes";
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 
@@ -15,8 +15,9 @@ app.use(express.json());
 
 (async () => {
   try {
-    await Connect();
+    Connect();
   } catch (error) {
+    console.error("Database connection failed:", error);
     process.exit(1);
   }
 })();

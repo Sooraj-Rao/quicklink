@@ -4,10 +4,11 @@ interface IUrlHistory {
   timeStamp: number;
 }
 
-interface IUrl extends Document {
-  short: string;
-  long: string;
-  history: IUrlHistory[];
+export interface IUrl extends Document {
+  short?: string;
+  long?: string;
+  apikey?: string;
+  history?: IUrlHistory[];
   createdAt?: Date;
   updatedAt?: Date;
 }

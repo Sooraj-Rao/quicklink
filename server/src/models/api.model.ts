@@ -1,15 +1,5 @@
 import mongoose, { Document, Schema, Model } from "mongoose";
-
-interface IUrlHistory {
-  timeStamp: number;
-}
-
-interface IUrl extends Document {
-  apikey: string;
-  history: IUrlHistory[];
-  createdAt?: Date;
-  updatedAt?: Date;
-}
+import { IUrl } from "./model";
 
 const createUrlSchema = (): Schema => {
   return new Schema(
@@ -25,7 +15,4 @@ const createUrlSchema = (): Schema => {
   );
 };
 
-export const NormalUrl: Model<IUrl> = mongoose.model<IUrl>(
-  "NormalUrl",
-  createUrlSchema()
-);
+export const ApiModel: Model<IUrl> = mongoose.model<IUrl>("api", createUrlSchema());
