@@ -15,5 +15,5 @@ export const RandomGenerator = (size: number, isAdmin?: boolean) => {
 export const StatusMessages = {
   "500": "Internal Server Error",
   "404": "Resource Not Found",
-  "200": "Ok",
+  "200": "Success",
 };

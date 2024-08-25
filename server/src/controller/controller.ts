@@ -1,7 +1,12 @@
 import { Request, Response } from "express";
 import { Model } from "mongoose";
-import { ApiModel, CustomUrl, IUrl, NormalUrl } from "../models";
-import { RandomGenerator, StatusMessages, Validator } from "../utils/helper";
+import { ApiModel, CustomUrl, IUrl, IUrlHistory, NormalUrl } from "../models";
+import {
+  RandomGenerator,
+  ServerURL,
+  StatusMessages,
+  Validator,
+} from "../utils/helper";
 import { RequestWithData } from "../middleware";
 
 const Link = process.env.LINK!;
@@ -10,53 +15,44 @@ export const AddURL = async (req: RequestWithData, res: Response) => {
   try {
     const { long, custom: short, key } = req.body;
     const queryParams = req.data;
-    const isAdmin =
-      key && process.env.OWNER ? key === process.env.OWNER : false;
-
+    const fullUrl = req.get("Referer") || "No referrer";
+    const isSite = fullUrl === process.env.LINK!;
+    const isAdmin = key === process.env.OWNER!;
     if (!isAdmin) {
       const { error, message } = Validator({ long, short });
       if (error) {
-        return SendResponse(res, false, 400, message || "Invalid URL");
+        return SendResponse(res, true, message || "Invalid URL");
       }
     }
 
-    let normalUrlExists;
-    let customUrlExists;
+    const normalUrlExists = await NormalUrl.findOne(
+      short ? { short } : { long }
+    );
 
-    if (long && short) {
-      [normalUrlExists, customUrlExists] = await Promise.all([
-        NormalUrl.findOne({ long }),
-        CustomUrl.findOne({ short }),
-      ]);
-    } else {
-      normalUrlExists = await NormalUrl.findOne({ long });
-    }
-
-    if (normalUrlExists && !short) {
-      return SendResponse(res, true, 200, StatusMessages["200"], {
-        short: normalUrlExists?.short,
-      });
-    }
-
-    if (customUrlExists) {
-      return SendResponse(res, false, 400, "Custom URL is already taken");
+    if (normalUrlExists) {
+      if (short === normalUrlExists.short) {
+        return SendResponse(res, true, "Custom URL is already taken");
+      }
+      if (normalUrlExists.short) {
+        return SendResponse(res, false, StatusMessages["200"], {
+          shortUrl: CompleteURL(normalUrlExists.short, isSite),
+        });
+      }
     }
 
     let shortUrl = RandomGenerator(Number(queryParams?.size), isAdmin);
-    if (short) {
-      const newUrl = new CustomUrl({ short, long });
-      await newUrl.save();
-      return SendResponse(res, true, 200, "Custom URL created", { short });
-    } else {
-      const newUrl = new NormalUrl({ short: shortUrl, long });
-      await newUrl.save();
-      return SendResponse(res, true, 200, "Short URL created", {
-        short: shortUrl,
-      });
-    }
+
+    const newUrL = await NormalUrl.create({
+      short: short ? short : shortUrl,
+      long,
+    });
+
+    return SendResponse(res, false, StatusMessages["200"], {
+      shortUrl: newUrL?.short,
+    });
   } catch (error) {
     console.log(error);
-    return SendResponse(res, false, 500, StatusMessages["500"]);
+    return SendResponse(res, true, StatusMessages["500"]);
   }
 };
 
@@ -74,10 +70,10 @@ export const GetURL = async (req: Request, res: Response) => {
         return res.redirect(redirectUrl);
       }
     }
-    return SendResponse(res, false, 404, StatusMessages["404"]);
+    return SendResponse(res, true, StatusMessages["404"]);
   } catch (error) {
     console.error("Error in GetURL:", error);
-    return SendResponse(res, false, 500, StatusMessages["500"]);
+    return SendResponse(res, true, StatusMessages["500"]);
   }
 };
 
@@ -91,16 +87,31 @@ export const GetCount = async (req: Request, res: Response) => {
 
     if (normalUrlCount || CustomUrlCount) {
       const url = normalUrlCount ? normalUrlCount : CustomUrlCount;
-      if (url) {
-        return SendResponse(res, true, 200, "URL count retrieved", {
-          count: url?.history?.length,
-        });
+
+      const fetchNormalTime =
+        url?.history?.map((item, i) => {
+          const date = new Date(item?.timeStamp);
+          return date.toLocaleString();
+        }) || [];
+      const lastClicked =
+        fetchNormalTime?.length == 0
+          ? "No clicks yet"
+          : fetchNormalTime[fetchNormalTime?.length - 1];
+
+      if (!url) {
+        return SendResponse(res, true, StatusMessages["404"]);
       }
+
+      SendResponse(res, false, "Click count retrieved", {
+        shortUrl: ServerURL + "/" + short,
+        lastClicked,
+        clicks: url?.history?.length,
+        timestamp: fetchNormalTime,
+      });
     }
-    return SendResponse(res, false, 404, StatusMessages["404"]);
   } catch (error) {
     console.log(error);
-    return SendResponse(res, false, 500, StatusMessages["500"]);
+    return SendResponse(res, true, StatusMessages["500"]);
   }
 };
 
@@ -125,13 +136,13 @@ export const CreateApiKey = async (_: Request, res: Response) => {
   try {
     const newKey = await ApiModel.create({ apikey: RandomGenerator(32) });
     if (!newKey) {
-      return SendResponse(res, false, 500, StatusMessages["500"]);
+      return SendResponse(res, true, StatusMessages["500"]);
     }
-    return SendResponse(res, true, 200, "API key created", {
+    return SendResponse(res, false, "API key created", {
       apikey: newKey.apikey,
     });
   } catch (error) {
-    return SendResponse(res, false, 500, StatusMessages["500"]);
+    return SendResponse(res, true, StatusMessages["500"]);
   }
 };
 
@@ -141,10 +152,12 @@ export const Redirect = (_: Request, res: Response): void => {
 
 export const SendResponse = (
   res: Response,
-  success: boolean,
-  status: number,
+  error: boolean,
   message?: string,
-  data?: { short?: string; count?: number; apikey?: string }
+  data?: any
 ) => {
-  return res.json({ success, status, message, data });
+  return res.json({ error, message, data });
 };
+
+export const CompleteURL = (link: string, isSite: boolean) =>
+  isSite ? link : `https://sj1.xyz/${link}`;

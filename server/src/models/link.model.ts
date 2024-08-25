@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, Model } from "mongoose";
 
-interface IUrlHistory {
+export interface IUrlHistory {
   timeStamp: number;
 }
 

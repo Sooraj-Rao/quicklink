@@ -5,16 +5,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/use-toast";
 import axios from "axios";
-import { Copy, Loader, Stars } from "lucide-react";
+import { Check, Copy, Link, Loader, QrCode, Stars } from "lucide-react";
 import { FormEvent, useRef, useState } from "react";
 import { Validator } from "@/app/util/validate.hook";
+import QRCodeView from "./qr";
+import { CheckIcon, CopyIcon } from "@radix-ui/react-icons";
+import { siteMetaData } from "@/data/siteMetaData";
 
 export const Server = process.env.NEXT_PUBLIC_SERVER!;
 
 const Home = ({ Portfolio }: { Portfolio: string }) => {
   const [Iscustom, setCustom] = useState(false);
+  const [Copied, setCopied] = useState(false);
   const refer = useRef<HTMLInputElement>(null);
   const [ShortUrl, setShortUrl] = useState("");
+  const [QrDisplay, setQrDisplay] = useState(false);
   const [loader, setloader] = useState(false);
   const [URL, setURL] = useState({
     long: "",
@@ -32,9 +37,13 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
     });
   };
 
+  const user = process.env.NEXT_PUBLIC_OWNER;
+
   const ShortenLongUrl = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const { error, key } = Validator(URL, Iscustom);
+    const item = localStorage.getItem(user || "");
+    const isAdmin = user === item ? user : null;
+    const { error } = Validator(URL, Iscustom, isAdmin);
 
     if (error) {
       return toast({
@@ -42,22 +51,27 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
         description: error,
       });
     }
-
+    const API_KEY = "CIOGAHELrrSECJhOlgfqfddxBdunPtPn";
     try {
       setloader(true);
-      const newReq = { long: URL.long, custom: URL.custom, key: key };
-      const res = await axios.post(`${Server}/add`, key ? newReq : URL);
-      const { success, message, data } = res.data;
-      if (!success)
-        toast({
+      const res = await fetch(`${Server}/api`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...URL, key: isAdmin }),
+      });
+      const respose = await res.json();
+      const { error, message, data } = respose;
+      if (error)
+        return toast({
           variant: "destructive",
           description: message,
         });
-
-      const shortUrl = Server + "/" + data.short;
+      const shortUrl = Server + "/" + data.shortUrl;
       setShortUrl(shortUrl);
     } catch (error) {
-      console.log(error);
       toast({
         variant: "destructive",
         description: "Failed to shorten URL",
@@ -67,40 +81,35 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
     }
   };
 
-  const CopyURL = async () => {
-    if (!refer.current) return;
-    refer.current.focus();
-    refer.current.select();
-    await window.navigator.clipboard.writeText(ShortUrl.split("//")[1]);
-    toast({
-      description: "URL Copied to the clipboard",
-    });
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <div className=" min-h-[calc(100vh)]">
+    <div className=" h-[calc(100vh-200px)] ">
+      {QrDisplay && <QRCodeView setQrDisply={setQrDisplay} value={ShortUrl} />}
       <h1
-        className={`scroll-m-20 text-center  mb-10 font-extrabold tracking-tight text-3xl sm:text-4xl lg:text-6xl
-        ${Iscustom ? "mt-14 duration-500" : "duration-500 mt-20"}
+        className={`scroll-m-20 text-center  mb-10 font-extrabold tracking-tight text-3xl px-2 sm:px-0 sm:text-4xl lg:text-6xl
+        ${Iscustom ? "mt-14 duration-" : "duratison-75 mt-20"}
         `}
       >
         {URL?.long ? (
           <span
             className={` sm:text-4xl text-xl  font-bold tracking-normal 
-          ${ShortUrl ? " invisible  duration-0" : " duration-75  visible"}
+          ${ShortUrl ? " hidden  duration-0" : " duration-75  block"}
          
           `}
           >
             Shorten unlimited URLs here for free!
           </span>
         ) : (
-          <span className=" duration-75s">
-            Quick Link : A Rapid URL Shortener
-          </span>
+          <span>Quick Link : A Rapid URL Shortener</span>
         )}
       </h1>
 
-      <div className=" flex justify-center  poppins-medium ">
+      <div className=" flex justify-center duration-500   ">
         {!ShortUrl ? (
           <form onSubmit={ShortenLongUrl}>
             <div className="grid w-full  items-center gap-1.5 mt-10">
@@ -161,14 +170,13 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
                 min 8 charcaters
               </h1>
               {Iscustom && (
-                <div className=" mt-6  shadow-lg p-3  border border-foreground/10  rounded-md">
+                <div className=" mt-6 max-w-[30rem]  shadow-lg p-3  border border-foreground/10  rounded-md">
                   <h1 className=" text-sm font-semibold text-center ">
                     Your custom URL will look like
                   </h1>
                   <Input
                     value={`${Server?.split("//")[1]}/${URL.custom}`}
                     readOnly
-                    disabled
                     className="mt-3 cursor-not-allowed text-foreground  border border-foreground/10"
                   />
                 </div>
@@ -197,53 +205,87 @@ const Home = ({ Portfolio }: { Portfolio: string }) => {
           </form>
         ) : (
           !loader && (
-            <div className=" flex  justify-center items-center flex-col my-3">
-              <div className=" flex flex-col justify-center items-center ">
-                <h2 className="scroll-m-10  pb-2 sm:text-3xl text-xl font-semibold tracking-tight first:mt-0">
-                  Here is your {URL.custom && "custom"} shortened URL 🎉
-                </h2>
-                <div className="flex w-full max-w-sm my-5 items-center justify-center  space-x-2">
-                  <Input
-                    ref={refer}
-                    value={ShortUrl.split("//")[1]}
-                    disabled
-                    type="text"
-                    className="border-slate-500 sm:w-60 w-48  disabled:cursor-default text-black dark:text-white font-semibold  focus:border-white"
-                  />
-                  <Button title="Copy URL" onClick={CopyURL}>
-                    {" "}
-                    <Copy size={20} />
+            <div className="flex items-center justify-center p-4 sm:p-6 lg:p-8">
+              <div className="rounded-lg shadow-xl p-6 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl space-y-6">
+                <h1 className="text-xl sm:text-2xl font-bold text-center">
+                  Your Shortened URL is Ready!
+                </h1>
+
+                <div className="space-y-2">
+                  <label
+                    htmlFor="shortened-url"
+                    className="text-sm font-medium text-muted-foreground"
+                  >
+                    Shortened URL
+                  </label>
+                  <div className="flex">
+                    <Input
+                      id="shortened-url"
+                      value={ShortUrl}
+                      readOnly
+                      className="rounded-r-none"
+                    />
+                    <Button
+                      onClick={() => copyToClipboard(ShortUrl)}
+                      className="rounded-l-none"
+                    >
+                      {Copied ? (
+                        <Check className="h-5 w-4" />
+                      ) : (
+                        <CopyIcon className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+                  <Button
+                    onClick={() => setQrDisplay(!QrDisplay)}
+                    variant="outline"
+                    className="flex-1"
+                  >
+                    <QrCode className="h-4 w-4 mr-2" />
+                    {QrDisplay ? "Hide QR Code" : "Show QR Code"}
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setShortUrl("");
+                      setURL({ long: "", custom: "" });
+                      setCustom(false);
+                    }}
+                    className="flex-1"
+                  >
+                    <Link className="h-4 w-4 mr-2" />
+                    Create New URL
                   </Button>
                 </div>
+
+                <p className="text-center text-sm">
+                  Share your shortened URL with anyone, anywhere!
+                </p>
               </div>
-              <Button
-                className=" mt-10 flex items-center gap-x-2"
-                onClick={() => {
-                  setShortUrl("");
-                  setURL({ long: "", custom: "" });
-                  setCustom(false);
-                }}
-              >
-                <span>Create another</span>
-                <span>
-                  <Stars size={16} />
-                </span>
-              </Button>
             </div>
           )
         )}
       </div>
-
-      <a
-        target="_blank"
-        href={Portfolio}
-        className=" absolute  sm:hidden text-sm bottom-3 left-[50%] translate-x-[-50%] translate-y-[-50%]"
-      >
-        Developed by
-        <span className=" cursor-pointer  ml-1 font-semibold">Sooraj</span>
-      </a>
+      <Footer />
     </div>
   );
 };
 
 export default Home;
+
+export const Footer = () => {
+  return (
+    <footer>
+      <a
+        target="_blank"
+        href={siteMetaData.portfolio}
+        className=" absolute  sm:hidden text-sm bottom-3 left-[50%] translate-x-[-50%] translate-y-[-50%]"
+      >
+        Developed by
+        <span className=" cursor-pointer  ml-1 font-semibold">Sooraj</span>
+      </a>
+    </footer>
+  );
+};

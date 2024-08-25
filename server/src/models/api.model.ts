@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema, Model } from "mongoose";
-import { IUrl } from "./model";
+import { IUrl } from "./link.model";
 
 const createUrlSchema = (): Schema => {
   return new Schema(

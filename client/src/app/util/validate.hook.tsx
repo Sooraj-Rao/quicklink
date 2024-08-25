@@ -3,12 +3,12 @@ type T_URL = {
   custom: string;
 };
 
-const user = process.env.NEXT_PUBLIC_USER;
-const item = localStorage.getItem(user || "");
-
-export const Validator = (URL: T_URL, isCustom: boolean) => {
-  if (item === user) return { key: user };
-
+export const Validator = (
+  URL: T_URL,
+  isCustom: boolean,
+  isAdmin: string | null
+) => {
+  if (isAdmin) return { error: false };
   const { long, custom } = URL;
 
   if (isCustom) {
