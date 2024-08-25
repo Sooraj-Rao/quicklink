@@ -10,20 +10,23 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CopyIcon, CheckIcon } from "lucide-react";
+import { CopyIcon, CheckIcon, Loader } from "lucide-react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { Server } from "@/components/component";
 import { toast } from "@/components/ui/use-toast";
 import { siteMetaData } from "@/data/siteMetaData";
+import { PiSpinner, PiSpinnerBall } from "react-icons/pi";
 
 export default function ApiPage() {
+  const [loader, setloader] = useState(false);
   const token = Cookies.get("token");
   const [apiKey, setApiKey] = useState(token || "");
   const [copied, setCopied] = useState(false);
 
   const generateApiKey = async () => {
     try {
+      setloader(true);
       const res = await axios.post(`${Server}/api/new`);
       const { data, error, message } = res.data;
       if (error) {
@@ -40,6 +43,8 @@ export default function ApiPage() {
         variant: "destructive",
         description: "Failed to generate API key",
       });
+    } finally {
+      setloader(false);
     }
   };
 
@@ -77,7 +82,16 @@ export default function ApiPage() {
               </Button>
             </div>
           ) : (
-            <Button onClick={generateApiKey}>Generate API Key</Button>
+            <Button disabled={loader} onClick={generateApiKey}>
+              {loader ? (
+                <span className=" flex items-center gap-x-2">
+                  Generating..
+                  <Loader className=" animate-spin" size={20} />
+                </span>
+              ) : (
+                "Generate API Key"
+              )}
+            </Button>
           )}
         </CardContent>
       </Card>

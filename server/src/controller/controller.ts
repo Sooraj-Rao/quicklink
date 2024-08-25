@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import { Model } from "mongoose";
-import { ApiModel, CustomUrl, IUrl, IUrlHistory, NormalUrl } from "../models";
+import { ApiModel, IUrl, NormalUrl } from "../models";
 import {
   RandomGenerator,
   ServerURL,
@@ -25,17 +24,15 @@ export const AddURL = async (req: RequestWithData, res: Response) => {
       }
     }
 
-    const normalUrlExists = await NormalUrl.findOne(
-      short ? { short } : { long }
-    );
+    const existingUrl = await NormalUrl.findOne(short ? { short } : { long });
 
-    if (normalUrlExists) {
-      if (short === normalUrlExists.short) {
+    if (existingUrl) {
+      if (short === existingUrl.short) {
         return SendResponse(res, true, "Custom URL is already taken");
       }
-      if (normalUrlExists.short) {
+      if (existingUrl.short) {
         return SendResponse(res, false, StatusMessages["200"], {
-          shortUrl: CompleteURL(normalUrlExists.short, isSite),
+          shortUrl: CompleteURL(existingUrl.short, isSite),
         });
       }
     }
@@ -59,12 +56,9 @@ export const AddURL = async (req: RequestWithData, res: Response) => {
 export const GetURL = async (req: Request, res: Response) => {
   try {
     const { short } = req.params;
-    const [findUrl, findUrlCustom] = await Promise.all([
-      updateUrlHistory(NormalUrl, short),
-      updateUrlHistory(CustomUrl, short),
-    ]);
-    if (findUrl || findUrlCustom) {
-      const url = findUrl ? findUrl?.long : findUrlCustom?.long;
+    const findUrl = await updateUrlHistory(short);
+    if (findUrl) {
+      const url = findUrl?.long;
       if (url) {
         const redirectUrl = url.startsWith("http") ? url : `http://${url}`;
         return res.redirect(redirectUrl);
@@ -80,35 +74,33 @@ export const GetURL = async (req: Request, res: Response) => {
 export const GetCount = async (req: Request, res: Response) => {
   try {
     const { short } = req.params;
-    const [normalUrlCount, CustomUrlCount] = await Promise.all([
-      NormalUrl.findOne({ short }),
-      CustomUrl.findOne({ short }),
-    ]);
-
-    if (normalUrlCount || CustomUrlCount) {
-      const url = normalUrlCount ? normalUrlCount : CustomUrlCount;
-
-      const fetchNormalTime =
-        url?.history?.map((item, i) => {
-          const date = new Date(item?.timeStamp);
-          return date.toLocaleString();
-        }) || [];
-      const lastClicked =
-        fetchNormalTime?.length == 0
-          ? "No clicks yet"
-          : fetchNormalTime[fetchNormalTime?.length - 1];
-
-      if (!url) {
-        return SendResponse(res, true, StatusMessages["404"]);
-      }
-
-      SendResponse(res, false, "Click count retrieved", {
-        shortUrl: ServerURL + "/" + short,
-        lastClicked,
-        clicks: url?.history?.length,
-        timestamp: fetchNormalTime,
-      });
+    const existingUrlCount = await NormalUrl.findOne({ short });
+    if (!existingUrlCount) {
+      return SendResponse(res, true, StatusMessages["404"]);
     }
+
+    const url = existingUrlCount;
+    const fetchNormalTime =
+      url?.history?.map((item, i) => {
+        const date = new Date(item?.timeStamp);
+        return date.toLocaleString();
+      }) || [];
+
+    const lastClicked =
+      fetchNormalTime?.length == 0
+        ? "No clicks yet"
+        : fetchNormalTime[fetchNormalTime?.length - 1];
+
+    if (!url) {
+      return SendResponse(res, true, StatusMessages["404"]);
+    }
+
+    SendResponse(res, false, "Click count retrieved", {
+      shortUrl: CompleteURL(short, false),
+      lastClicked,
+      clicks: url?.history?.length,
+      timestamp: fetchNormalTime,
+    });
   } catch (error) {
     console.log(error);
     return SendResponse(res, true, StatusMessages["500"]);
@@ -116,10 +108,9 @@ export const GetCount = async (req: Request, res: Response) => {
 };
 
 export const updateUrlHistory = async (
-  Model: Model<IUrl>,
   short?: string
 ): Promise<IUrl | null> => {
-  return await Model.findOneAndUpdate(
+  return await NormalUrl.findOneAndUpdate(
     { short },
     {
       $push: {
@@ -134,7 +125,7 @@ export const updateUrlHistory = async (
 
 export const CreateApiKey = async (_: Request, res: Response) => {
   try {
-    const newKey = await ApiModel.create({ apikey: RandomGenerator(32) });
+    const newKey = await ApiModel.create({ apikey: RandomGenerator(24) });
     if (!newKey) {
       return SendResponse(res, true, StatusMessages["500"]);
     }
@@ -160,4 +151,4 @@ export const SendResponse = (
 };
 
 export const CompleteURL = (link: string, isSite: boolean) =>
-  isSite ? link : `https://sj1.xyz/${link}`;
+  isSite ? link : `${ServerURL}/${link}`;

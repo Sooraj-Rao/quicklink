@@ -14,7 +14,7 @@ import { siteMetaData } from "@/data/siteMetaData";
 
 export const Server = process.env.NEXT_PUBLIC_SERVER!;
 
-const Home = ({ Portfolio }: { Portfolio: string }) => {
+const Home = () => {
   const [Iscustom, setCustom] = useState(false);
   const [Copied, setCopied] = useState(false);
   const refer = useRef<HTMLInputElement>(null);

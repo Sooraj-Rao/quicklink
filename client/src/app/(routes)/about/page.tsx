@@ -14,7 +14,7 @@ export default function AboutPage() {
     <div className="max-w-3xl mx-auto p-4 text-sm sm:text-base ">
       <div className="mb-4 border-transparent">
         <CardHeader>
-          <CardTitle className=" ">About QuickLink</CardTitle>
+          <CardTitle className=" text-base ">About QuickLink</CardTitle>
         </CardHeader>
         <CardContent>
           <p className=" mb-4">
@@ -33,7 +33,7 @@ export default function AboutPage() {
       <hr className=" dark:border-foreground/20" />
       <div className="mb-4">
         <CardHeader>
-          <CardTitle>Contact Us</CardTitle>
+          <CardTitle className="text-base ">Contact Us</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="mb-4">
@@ -57,7 +57,7 @@ export default function AboutPage() {
       <hr className=" dark:border-foreground/20" />
       <div className="mb-4">
         <CardHeader>
-          <CardTitle>Socials</CardTitle>
+          <CardTitle className="text-base ">Socials</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="mb-4">Reach me out here!</p>

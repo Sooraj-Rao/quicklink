@@ -58,10 +58,10 @@ export const Header = () => {
         <a href={siteMetaData.report + "quicklink_header"} target="_blank">
           <Button
             variant="ghost"
-            className=" py-2 px-4   text-xs sm:text-sm  rounded md:flex hidden items-center gap-x-3"
+            className=" py-2 px-4   text-xs sm:text-sm  rounded md:flex hidden items-center gap-x-2"
           >
-            <AiOutlineBug size={20} />
             <span>Report an Issue</span>
+            <AiOutlineBug size={20} />
           </Button>
         </a>
         <Link href={"/docs/apikey"}>

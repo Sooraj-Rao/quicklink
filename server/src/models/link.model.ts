@@ -33,7 +33,3 @@ export const NormalUrl: Model<IUrl> = mongoose.model<IUrl>(
   createUrlSchema()
 );
 
-export const CustomUrl: Model<IUrl> = mongoose.model<IUrl>(
-  "CustomUrl",
-  createUrlSchema()
-);
