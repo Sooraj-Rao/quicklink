@@ -51,13 +51,12 @@ const Home = () => {
         description: error,
       });
     }
-    const API_KEY = "CIOGAHELrrSECJhOlgfqfddxBdunPtPn";
     try {
       setloader(true);
       const res = await fetch(`${Server}/api`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${API_KEY}`,
+          Authorization: `Bearer admin`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ ...URL, key: isAdmin }),
@@ -87,8 +86,6 @@ const Home = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-
-  
   return (
     <div className=" h-[calc(100vh-200px)] ">
       {QrDisplay && <QRCodeView setQrDisply={setQrDisplay} value={ShortUrl} />}
