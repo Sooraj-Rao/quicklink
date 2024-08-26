@@ -14,6 +14,7 @@ export const fetchData = async (
       process.env.NEXT_PUBLIC_OWNER
   )
     return;
+
   const token = Cookies.get(eventType);
   if (token == eventType) return;
   const Server = process.env.NEXT_PUBLIC_API!;
