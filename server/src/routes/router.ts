@@ -2,6 +2,7 @@ import express from "express";
 import {
   AddURL,
   CreateApiKey,
+  GetAllApiUrl,
   GetCount,
   GetURL,
   Redirect,
@@ -9,9 +10,12 @@ import {
 import { ValidateAPI } from "../middleware/handleAPI";
 export const router = express.Router();
 
-router.post("/api/", ValidateAPI, AddURL);
+
 router.post("/api/new", CreateApiKey);
+router.post("/api/", ValidateAPI, AddURL);
+
+router.get("/api/count/:short", GetCount);
+router.get("/api/getall", ValidateAPI, GetAllApiUrl);
 
 router.get("/:short", GetURL);
-router.get("/api/count/:short", GetCount);
 router.get("/*", Redirect);

@@ -61,10 +61,10 @@ export const Header = () => {
             className=" py-2 px-4   text-xs sm:text-sm  rounded md:flex hidden items-center gap-x-2"
           >
             <span>Report an Issue</span>
-            <AiOutlineBug size={20} />
+            <AiOutlineBug size={16} />
           </Button>
         </a>
-        <Link href={"/docs/apikey"}>
+        <Link href={"/docs/api"}>
           <Button className=" scale-[.9] sm:flex hidden  text-xs sm:text-base    items-center gap-x-2 sm:gap-x-3">
             <span>API</span>
             <CodeXml size={20} />

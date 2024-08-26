@@ -8,7 +8,12 @@ export const fetchData = async (
   additionalData: string,
   ref: string
 ) => {
-  if (ref === process.env.NEXT_PUBLIC_USER!) return;
+  if (
+    ref === process.env.NEXT_PUBLIC_USER! ||
+    localStorage.getItem(process.env.NEXT_PUBLIC_OWNER!) ===
+      process.env.NEXT_PUBLIC_OWNER
+  )
+    return;
   const token = Cookies.get(eventType);
   if (token == eventType) return;
   const Server = process.env.NEXT_PUBLIC_API!;
@@ -22,4 +27,3 @@ export const fetchData = async (
     Cookies.set(eventType, eventType);
   }
 };
-

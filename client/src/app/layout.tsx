@@ -35,6 +35,7 @@ export const metadata: Metadata = {
     description: "Manage and track your shortened URLs with ease.",
     images: ["/client/public/icon2.png"],
   },
+  metadataBase: new URL("https://quicklink.soorajrao.in"),
 };
 
 export default function RootLayout({

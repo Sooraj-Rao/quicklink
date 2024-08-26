@@ -5,6 +5,7 @@ import { SendResponse } from "../controller";
 interface IDecode {
   apikey: string;
   size: number;
+  isSite: boolean;
 }
 
 export interface RequestWithData extends Request {
@@ -17,23 +18,18 @@ export const ValidateAPI = async (
   next: NextFunction
 ) => {
   const authHeader = req.headers.authorization;
+  const fullUrl = req.get("Referer") || "No referrer";
+  const isSite = fullUrl === process.env.LINK!;
+
+  if (isSite) return next();
+
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return SendResponse(res, true, "API key is required");
   }
 
   const apikey = authHeader.split(" ")[1];
 
-  const isValidApi = await ApiModel.findOneAndUpdate(
-    { apikey },
-    {
-      $push: {
-        history: {
-          timeStamp: Date.now(),
-        },
-      },
-    },
-    { new: true }
-  );
+  const isValidApi = await ApiModel.findOne({ apikey });
 
   if (!isValidApi) {
     return SendResponse(res, true, "Invalid API key");
@@ -43,6 +39,7 @@ export const ValidateAPI = async (
 
   req.data = {
     apikey,
+    isSite,
     size: validSize,
   };
 

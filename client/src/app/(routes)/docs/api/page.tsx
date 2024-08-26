@@ -121,64 +121,77 @@ export default function ApiPage() {
           <CardTitle>API Endpoints</CardTitle>
         </CardHeader>
         <CardContent>
-          <h3 className="text-xl font-semibold tracking-wide mb-2">
-            POST &nbsp;&nbsp; /api
-          </h3>
-          <p className="mb-4 text-sm">Shorten a URL</p>
+          <div>
+            <h3 className="text-xl font-semibold tracking-wide mb-2">
+              POST &nbsp;&nbsp; /api
+            </h3>
+            <p className="mb-4 text-sm">Shorten a URL</p>
 
-          <h4 className="font-semibold mb-2">Request Body</h4>
-          <pre className="bg-muted p-2 rounded mb-2 overflow-x-scroll">
-            {`{
+            <h4 className="font-semibold mb-2">Request Body</h4>
+            <pre className="bg-muted p-2 rounded mb-2 overflow-x-scroll sm:overflow-auto">
+              {`{
   "long": "https://quicklink.soorajrao.in",
   "custom": "mywebsiteurl" // optional
 }
 `}
-          </pre>
-          <p className="mb-4 text-sm">
-            <b>long</b> - Your long URL to be shortened <br />
-            <b>Custom</b>{" "}
-            <span className="text-muted-foreground font-normal">
-              (optional)
-            </span>{" "}
-            - Custom backhalf for your URL
-            <span className=" text-sm text-muted-foreground font-normal">
-              ( Only letters, numbers, hyphens, and underscores allowed )
-            </span>
-          </p>
-          <h4 className="font-semibold mb-2 ">
-            Query Params{" "}
-            <span className="text-muted-foreground font-normal">
-              (optional)
-            </span>
-          </h4>
-          <pre className="bg-muted p-2 rounded mb-4 overflow-x-scroll">
-            {`https://sj1.xyz/api?size=15`}
-          </pre>
-          <p className="mb-4 text-sm">
-            <b>size</b> - Size refers to the number of characters in the link.
-            By default, it is 10
-          </p>
-          <h4 className="font-semibold mb-2">Response:</h4>
-          <pre className="bg-muted p-2 rounded mb-4 overflow-x-scroll">
-            {`{
+            </pre>
+            <p className="mb-4 text-sm">
+              <b>long</b> - Your long URL to be shortened <br />
+              <b>Custom</b>{" "}
+              <span className="text-muted-foreground font-normal">
+                (optional)
+              </span>{" "}
+              - Custom backhalf for your URL
+              <span className=" text-sm text-muted-foreground font-normal">
+                ( Only letters, numbers, hyphens, and underscores allowed )
+              </span>
+            </p>
+            <h4 className="font-semibold mb-2 ">
+              Query Params{" "}
+              <span className="text-muted-foreground font-normal">
+                (optional)
+              </span>
+            </h4>
+            <pre className="bg-muted p-2 rounded mb-4 overflow-x-scroll  sm:overflow-auto">
+              {`https://sj1.xyz/api?size=15`}
+            </pre>
+            <p className="mb-4 text-sm">
+              <b>size</b> - Size refers to the number of characters in the link.
+              By default, it is 10
+            </p>
+            <h4 className="font-semibold mb-2">
+              Response{" "}
+              <span className=" text-muted-foreground font-normal">
+                (sample)
+              </span>
+            </h4>
+            <pre className="bg-muted p-2 rounded mb-4 overflow-x-scroll sm:overflow-auto">
+              {`{
   "error": false,
   "message": "Short URL created",
   "data": {
     "short": "ju5whysf"
   }
 }`}
-          </pre>
+            </pre>
+          </div>
+          <hr className=" my-6" />
+          <div>
+            <h3 className="text-xl font-semibold tracking-wide mb-2">
+              GET &nbsp;&nbsp; /api/count/[shortUrl]
+            </h3>
+            <p className="mb-4 text-sm">
+              Track the number of clicks on your shortened URL.
+            </p>
 
-          <h3 className="text-xl font-semibold tracking-wide mb-2">
-            GET &nbsp;&nbsp; /api/count/[shortUrl]
-          </h3>
-          <p className="mb-4 text-sm">
-            Track the number of clicks on your shortened URL.
-          </p>
-
-          <h4 className="font-semibold mb-2">Response:</h4>
-          <pre className="bg-muted p-2 rounded mb-4 overflow-x-scroll">
-            {`{
+            <h4 className="font-semibold mb-2">
+              Response{" "}
+              <span className=" text-muted-foreground font-normal">
+                (sample)
+              </span>
+            </h4>
+            <pre className="bg-muted p-2 rounded mb-4 overflow-x-scroll sm:overflow-auto">
+              {`{
   "error": false,
   "message": "Click count retrieved",
   "data": {
@@ -191,13 +204,59 @@ export default function ApiPage() {
     ]
   }
 }`}
-          </pre>
-          <p className="mb-4 text-sm">
-            <b>shortUrl</b> - The shortened URL you want to track <br />
-            <b>clicks</b> - Number of times the URL has been clicked <br />
-            <b>lastClicked</b> - Timestamp of the last click <br />
-            <b>timestamp</b> - The list of click timestamps
-          </p>
+            </pre>
+            <p className="mb-4 text-sm">
+              <b>shortUrl</b> - The shortened URL you want to track <br />
+              <b>clicks</b> - Number of times the URL has been clicked <br />
+              <b>lastClicked</b> - Timestamp of the last click <br />
+              <b>timestamp</b> - The list of click timestamps
+            </p>
+          </div>
+          <hr className=" my-6" />
+          <div>
+            <h3 className="text-xl font-semibold tracking-wide mb-2">
+              GET &nbsp;&nbsp; /api/getall
+            </h3>
+            <p className="mb-4 text-sm">
+              Retrieve all shortened URLs and their associated history for the
+              API key provided.
+            </p>
+
+            <h4 className="font-semibold mb-2">
+              Response{" "}
+              <span className=" text-muted-foreground font-normal">
+                (sample)
+              </span>
+            </h4>
+            <pre className="bg-muted p-2 rounded mb-4 overflow-x-scroll sm:overflow-auto">
+              {`{
+  "error": false,
+  "message": "Success",
+  "data": [
+    {
+      "shortUrl": "https://sj1.xyz/bwvsjzvS",
+      "longUrl": "https://example.com",
+      "clickHistory": "No clicks yet"
+    },
+    {
+      "shortUrl": "https://sj1.xyz/lYScRgyv",
+      "longUrl": "https://example2.com",
+      "clickHistory": [
+        "26/08/2024, 19:15:05",
+        "26/08/2024, 19:39:34"
+      ]
+    }
+  ]
+}
+              `}
+            </pre>
+            <p className="mb-4 text-sm">
+              <b>shortUrl</b> - The shortened URL <br />
+              <b>longUrl</b> - The original long URL <br />
+              <b>clickHistory</b> - A list of timestamp recording when the
+              URL was accessed
+            </p>
+          </div>
         </CardContent>
       </Card>
 
@@ -213,7 +272,7 @@ export default function ApiPage() {
               <TabsTrigger value="javascript">JavaScript</TabsTrigger>
             </TabsList>
             <TabsContent value="curl">
-              <pre className="bg-muted p-2 rounded overflow-x-scroll">
+              <pre className="bg-muted p-2 rounded overflow-x-scroll sm:overflow-auto">
                 {`curl -X POST https://sj1.xyz/api \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
@@ -221,7 +280,7 @@ export default function ApiPage() {
               </pre>
             </TabsContent>
             <TabsContent value="python">
-              <pre className="bg-muted p-2 rounded overflow-x-scroll">
+              <pre className="bg-muted p-2 rounded overflow-x-scroll sm:overflow-auto">
                 {`import requests
 
 api_key = "YOUR_API_KEY"
@@ -237,7 +296,7 @@ print(response.json()["data"]["shortUrl"])`}
               </pre>
             </TabsContent>
             <TabsContent value="javascript">
-              <pre className="bg-muted p-2 rounded overflow-x-scroll">
+              <pre className="bg-muted p-2 rounded overflow-x-scroll sm:overflow-auto">
                 {`const apiKey = "YOUR_API_KEY";
 const url = "https://example.com/very-long-url-that-needs-shortening";
 

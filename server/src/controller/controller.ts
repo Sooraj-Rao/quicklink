@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ApiModel, IUrl, NormalUrl } from "../models";
+import { ApiModel, IUrl, Links } from "../models";
 import {
   RandomGenerator,
   ServerURL,
@@ -14,9 +14,9 @@ export const AddURL = async (req: RequestWithData, res: Response) => {
   try {
     const { long, custom: short, key } = req.body;
     const queryParams = req.data;
-    const fullUrl = req.get("Referer") || "No referrer";
-    const isSite = fullUrl === process.env.LINK!;
+    const isSite = queryParams?.isSite as boolean;
     const isAdmin = key === process.env.OWNER!;
+
     if (!isAdmin) {
       const { error, message } = Validator({ long, short });
       if (error) {
@@ -24,7 +24,7 @@ export const AddURL = async (req: RequestWithData, res: Response) => {
       }
     }
 
-    const existingUrl = await NormalUrl.findOne(short ? { short } : { long });
+    const existingUrl = await Links.findOne(short ? { short } : { long });
 
     if (existingUrl) {
       if (short === existingUrl.short) {
@@ -39,13 +39,24 @@ export const AddURL = async (req: RequestWithData, res: Response) => {
 
     let shortUrl = RandomGenerator(Number(queryParams?.size), isAdmin);
 
-    const newUrL = await NormalUrl.create({
+    const newUrL = await Links.create({
       short: short ? short : shortUrl,
       long,
     });
 
+    await ApiModel.findOneAndUpdate(
+      { apikey: queryParams?.apikey },
+      {
+        $push: {
+          links: newUrL._id,
+        },
+      }
+    );
+
     return SendResponse(res, false, StatusMessages["200"], {
-      shortUrl: newUrL?.short,
+      shortUrl: queryParams?.apikey
+        ? CompleteURL(newUrL.short as string, isSite)
+        : newUrL?.short,
     });
   } catch (error) {
     console.log(error);
@@ -74,7 +85,7 @@ export const GetURL = async (req: Request, res: Response) => {
 export const GetCount = async (req: Request, res: Response) => {
   try {
     const { short } = req.params;
-    const existingUrlCount = await NormalUrl.findOne({ short });
+    const existingUrlCount = await Links.findOne({ short });
     if (!existingUrlCount) {
       return SendResponse(res, true, StatusMessages["404"]);
     }
@@ -107,10 +118,36 @@ export const GetCount = async (req: Request, res: Response) => {
   }
 };
 
+export const GetAllApiUrl = async (req: RequestWithData, res: Response) => {
+  try {
+    const reqData = req.data;
+    const result = await ApiModel.findOne({ apikey: reqData?.apikey }).populate(
+      "links"
+    );
+
+    const OnlyLinkData = result?.links.map((item, i) => {
+      const times =
+        item?.history?.map((item, i) => {
+          const date = new Date(item?.timeStamp);
+          return date.toLocaleString();
+        }) || [];
+
+      return {
+        shortUrl: CompleteURL(item.short as string, false),
+        longUrl: item.long,
+        clickHistory: item.history?.length == 0 ? "No clicks yet" : times,
+      };
+    });
+    return SendResponse(res, false, "Successfully fetched data", OnlyLinkData);
+  } catch (error) {
+    return SendResponse(res, true, StatusMessages["500"]);
+  }
+};
+
 export const updateUrlHistory = async (
   short?: string
 ): Promise<IUrl | null> => {
-  return await NormalUrl.findOneAndUpdate(
+  return await Links.findOneAndUpdate(
     { short },
     {
       $push: {

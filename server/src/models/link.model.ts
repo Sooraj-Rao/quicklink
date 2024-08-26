@@ -13,8 +13,8 @@ export interface IUrl extends Document {
   updatedAt?: Date;
 }
 
-const createUrlSchema = (): Schema => {
-  return new Schema(
+const createUrlSchema = (): Schema<IUrl> => {
+  return new Schema<IUrl>(
     {
       short: { type: String, required: true },
       long: { type: String, required: true },
@@ -28,8 +28,7 @@ const createUrlSchema = (): Schema => {
   );
 };
 
-export const NormalUrl: Model<IUrl> = mongoose.model<IUrl>(
-  "NormalUrl",
+export const Links: Model<IUrl> = mongoose.model<IUrl>(
+  "links",
   createUrlSchema()
 );
-

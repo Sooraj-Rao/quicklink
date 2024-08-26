@@ -87,6 +87,8 @@ const Home = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
+
+  
   return (
     <div className=" h-[calc(100vh-200px)] ">
       {QrDisplay && <QRCodeView setQrDisply={setQrDisplay} value={ShortUrl} />}
