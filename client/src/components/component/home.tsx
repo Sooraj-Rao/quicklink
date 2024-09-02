@@ -4,20 +4,21 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/use-toast";
-import axios from "axios";
-import { Check, Copy, Link, Loader, QrCode, Stars } from "lucide-react";
-import { FormEvent, useRef, useState } from "react";
+import { Check, Link, Loader, QrCode } from "lucide-react";
+import { FormEvent, useState } from "react";
 import { Validator } from "@/app/util/validate.hook";
 import QRCodeView from "./qr";
-import { CheckIcon, CopyIcon } from "@radix-ui/react-icons";
+import { CopyIcon } from "@radix-ui/react-icons";
 import { siteMetaData } from "@/data/siteMetaData";
+import fetchData from "./fetchData";
+import { useZustandStore } from "./zustand.store";
 
 export const Server = process.env.NEXT_PUBLIC_SERVER!;
 
 const Home = () => {
+  const { Ref } = useZustandStore();
   const [Iscustom, setCustom] = useState(false);
   const [Copied, setCopied] = useState(false);
-  const refer = useRef<HTMLInputElement>(null);
   const [ShortUrl, setShortUrl] = useState("");
   const [QrDisplay, setQrDisplay] = useState(false);
   const [loader, setloader] = useState(false);
@@ -56,7 +57,7 @@ const Home = () => {
       const res = await fetch(`${Server}/api`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer admin`,
+          Authorization: `Bearer ${"ilnMxRHMWwNIWhvsvFHpxufJ"}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ ...URL, key: isAdmin }),
@@ -77,6 +78,7 @@ const Home = () => {
       });
     } finally {
       setloader(false);
+      fetchData("shorten-url", Ref || "search", "quicklink-home", "none");
     }
   };
 
@@ -87,7 +89,7 @@ const Home = () => {
   };
 
   return (
-    <div className=" h-[calc(100vh-200px)] ">
+    <div className=" h-[calc(100vh-200px)]  ">
       {QrDisplay && <QRCodeView setQrDisply={setQrDisplay} value={ShortUrl} />}
       <h1
         className={`scroll-m-20 text-center  mb-10 font-extrabold tracking-tight text-3xl px-2 sm:px-0 sm:text-4xl lg:text-6xl
@@ -108,7 +110,7 @@ const Home = () => {
         )}
       </h1>
 
-      <div className=" flex justify-center duration-500   ">
+      <div className=" flex justify-center    ">
         {!ShortUrl ? (
           <form onSubmit={ShortenLongUrl}>
             <div className="grid w-full  items-center gap-1.5 mt-10">
@@ -267,17 +269,24 @@ const Home = () => {
           )
         )}
       </div>
-      <Footer />
+      <Footer Ref={Ref} />
     </div>
   );
 };
 
 export default Home;
 
-export const Footer = () => {
+export const Footer = ({ Ref }: { Ref: string }) => {
   return (
     <footer>
       <a
+        onClick={() =>
+          fetchData(
+            "open-portfolio",
+            Ref || "search",
+            "quicklink-mobile-footer"
+          )
+        }
         target="_blank"
         href={siteMetaData.portfolio}
         className=" absolute  sm:hidden text-sm bottom-3 left-[50%] translate-x-[-50%] translate-y-[-50%]"

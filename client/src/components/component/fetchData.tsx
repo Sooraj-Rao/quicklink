@@ -3,28 +3,61 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-export const fetchData = async (
+const fetchData = async (
   eventType: string,
-  additionalData: string,
-  ref: string
+  ref?: string,
+  utm_source?: string,
+  additionalData?: string
 ) => {
-  if (
-    ref === process.env.NEXT_PUBLIC_USER! ||
-    localStorage.getItem(process.env.NEXT_PUBLIC_OWNER!) ===
-      process.env.NEXT_PUBLIC_OWNER
-  )
-    return;
-
+  const key = process.env.NEXT_PUBLIC_USER_KEY!;
+  if (localStorage.getItem(key) === key) return;
   const token = Cookies.get(eventType);
   if (token == eventType) return;
+  if (ref === process.env.NEXT_PUBLIC_USER!) return;
+
+  let somedata = { additionalData };
+  if (eventType == "view:quicklink") {
+    somedata = await FetchSomeData();
+    somedata.additionalData = additionalData || "none";
+  }
   const Server = process.env.NEXT_PUBLIC_API!;
   const res = await axios.post(Server, {
-    eventType,
+    eventType: eventType.trim(),
     ref,
-    additionalData,
+    utm_source,
+    additionalData: JSON.stringify(somedata),
   });
   const { error } = res.data;
   if (!error) {
     Cookies.set(eventType, eventType);
   }
+};
+
+export default fetchData;
+
+const FetchSomeData = async () => {
+  const fetchData = async () => {
+    const Server2 = process.env.NEXT_PUBLIC_API2!;
+    try {
+      const response = await fetch(Server2);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return null;
+    }
+  };
+
+  let data = await fetchData();
+  if (data) {
+    const { city, latitude, longitude, country, org, ip } = data;
+    data = {
+      city,
+      latlong: `${latitude},${longitude}`,
+      country,
+      org,
+      ip,
+    };
+  }
+
+  return data;
 };

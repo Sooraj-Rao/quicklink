@@ -8,9 +8,17 @@ import icon from "../../../public/icon2.png";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { siteMetaData } from "@/data/siteMetaData";
+import fetchData from "./fetchData";
+import { useZustandStore } from "./zustand.store";
 
 export const Header = () => {
   const path = usePathname();
+  const { Ref } = useZustandStore();
+
+  const SendData = (data: string) => {
+    fetchData(data, Ref || "search", "quicklink-header", "none");
+  };
+
   return (
     <header className=" flex justify-between sticky top-0  bg-background/70  backdrop-blur   shadow-md shadow-foreground/5  items-center px-4 sm:px-10  sm:py-4 py-2 dark:border-b  border-b-foreground/20 sm:mt-0  dark:shadow-none ">
       <a href={"/"}>
@@ -42,6 +50,7 @@ export const Header = () => {
           </Button>
         </Link>
         <Link
+          onClick={() => SendData("click:about-page")}
           href={"/about"}
           className={`
           ${path.includes("about") ? "hidden sm:block" : "block"}
@@ -55,7 +64,11 @@ export const Header = () => {
           </Button>
         </Link>
 
-        <a href={siteMetaData.report + "quicklink_header"} target="_blank">
+        <a
+          onClick={() => SendData("click:report-issue")}
+          href={siteMetaData.report + "quicklink_header"}
+          target="_blank"
+        >
           <Button
             variant="ghost"
             className=" py-2 px-4   text-xs sm:text-sm  rounded md:flex hidden items-center gap-x-2"
@@ -64,7 +77,7 @@ export const Header = () => {
             <AiOutlineBug size={16} />
           </Button>
         </a>
-        <Link href={"/docs/api"}>
+        <Link onClick={() => SendData("click:API-page")} href={"/docs/api"}>
           <Button className=" scale-[.9] sm:flex hidden  text-xs sm:text-base    items-center gap-x-2 sm:gap-x-3">
             <span>API</span>
             <CodeXml size={20} />

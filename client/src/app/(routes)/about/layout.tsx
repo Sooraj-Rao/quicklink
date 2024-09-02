@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About - QuickLink",
+  title: "QuickLink - About ",
   description:
     "Learn more about QuickLink and how we simplify URL shortening and link management.",
 };

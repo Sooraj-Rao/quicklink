@@ -59,7 +59,6 @@ export const AddURL = async (req: RequestWithData, res: Response) => {
         : newUrL?.short,
     });
   } catch (error) {
-    console.log(error);
     return SendResponse(res, true, StatusMessages["500"]);
   }
 };
@@ -162,7 +161,8 @@ export const updateUrlHistory = async (
 
 export const CreateApiKey = async (_: Request, res: Response) => {
   try {
-    const newKey = await ApiModel.create({ apikey: RandomGenerator(24) });
+    const newApiKey = RandomGenerator(24);
+    const newKey = await ApiModel.create({ apikey: `quklnk_${newApiKey}` });
     if (!newKey) {
       return SendResponse(res, true, StatusMessages["500"]);
     }

@@ -1,15 +1,21 @@
 "use client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { siteMetaData } from "@/data/siteMetaData";
-import { IoIosChatbubbles } from "react-icons/io";
-import { ChatBubbleIcon, LinkedInLogoIcon } from "@radix-ui/react-icons";
+import { LinkedInLogoIcon } from "@radix-ui/react-icons";
 import { IoMdMail } from "react-icons/io";
 import { IoMdChatboxes } from "react-icons/io";
-import { BsFillCursorFill } from "react-icons/bs";
 import { PiCursorClickFill } from "react-icons/pi";
+import fetchData from "@/components/component/fetchData";
+import { useZustandStore } from "@/components/component/zustand.store";
 
 export default function AboutPage() {
+  const { Ref } = useZustandStore();
+
+  const SendData = (data: string) => {
+    fetchData(data, Ref || "search", "quicklink-about", "none");
+  };
+  
   return (
     <div className="max-w-3xl mx-auto p-4 text-sm sm:text-base ">
       <div className="mb-4 border-transparent">
@@ -43,6 +49,7 @@ export default function AboutPage() {
           <div className="mt-6 flex space-x-4">
             <Button asChild variant="outline" className=" flex gap-x-3 ">
               <a
+                onClick={() => SendData("open-contact-us")}
                 href={siteMetaData.contact + "quicklink_about"}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -65,6 +72,7 @@ export default function AboutPage() {
           <div className="mt-6 flex space-x-4">
             <Button title="mail" asChild variant="outline" size="icon">
               <a
+                onClick={() => SendData("open-mail")}
                 href={siteMetaData.mail}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -74,6 +82,7 @@ export default function AboutPage() {
             </Button>
             <Button title="linkedin" asChild variant="outline" size="icon">
               <a
+                onClick={() => SendData("open-linkedin")}
                 href={siteMetaData.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -83,6 +92,7 @@ export default function AboutPage() {
             </Button>
             <Button title="portfolio" asChild variant="outline" size="icon">
               <a
+                onClick={() => SendData("open-portfolio")}
                 href={siteMetaData.portfolio}
                 target="_blank"
                 rel="noopener noreferrer"
