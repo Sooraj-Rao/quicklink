@@ -35,7 +35,7 @@ export const Header = () => {
       <Button
         variant={`${href.includes("docs") ? "default" : "ghost"}`}
         size="sm"
-        className="w-full  text-sm justify-start "
+        className="w-full text-sm justify-start "
       >
         {children}
       </Button>

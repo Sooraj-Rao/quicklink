@@ -18,12 +18,12 @@ export default function AboutPage() {
   
   return (
     <div className="max-w-3xl mx-auto p-4 text-sm sm:text-base ">
-      <div className="mb-4 border-transparent">
+      <div className="mb-2 border-transparent">
         <CardHeader>
           <CardTitle className=" text-base ">About QuickLink</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className=" mb-4">
+          <p className=" mb-2">
             QuickLink is a powerful and easy-to-use URL shortening service
             designed to make sharing long URLs quick and effortless. With
             customizable backhalves, API access, and tracking features, you can
@@ -37,16 +37,16 @@ export default function AboutPage() {
         </CardContent>
       </div>
       <hr className=" dark:border-foreground/20" />
-      <div className="mb-4">
+      <div className="mb-2">
         <CardHeader>
           <CardTitle className="text-base ">Contact Us</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="mb-4">
+          <p className="mb-2">
             Have any questions, feedback, or issues? {"We're"} here to help!
           </p>
 
-          <div className="mt-6 flex space-x-4">
+          <div className="mt-4 flex space-x-4">
             <Button asChild variant="outline" className=" flex gap-x-3 ">
               <a
                 onClick={() => SendData("open-contact-us")}
@@ -62,12 +62,12 @@ export default function AboutPage() {
         </CardContent>
       </div>
       <hr className=" dark:border-foreground/20" />
-      <div className="mb-4">
+      <div className="mb-2">
         <CardHeader>
           <CardTitle className="text-base ">Socials</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="mb-4">Reach me out here!</p>
+          <p className="mb-2">Reach me out here!</p>
 
           <div className="mt-6 flex space-x-4">
             <Button title="mail" asChild variant="outline" size="icon">
