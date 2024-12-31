@@ -117,6 +117,21 @@ export const GetCount = async (req: Request, res: Response) => {
   }
 };
 
+export const GetAll = async (req: Request, res: Response) => {
+  const { ref, count } = req.params;
+  if (ref === "srao") {
+    let data;
+
+    if (count) {
+      data = await Links.find().limit(parseInt(count));
+    } else {
+      data = await Links.find();
+    }
+
+    res.json(data);
+  }
+};
+
 export const GetAllApiUrl = async (req: RequestWithData, res: Response) => {
   try {
     const reqData = req.data;
