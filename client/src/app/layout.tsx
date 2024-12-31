@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     siteName: "QuickLink",
     images: [
       {
-        url: "/client/public/icon2.png",
+        url: "/client/public/img.webp",
         width: 800,
         height: 600,
         alt: "QuickLink",
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "QuickLink - URL Shortener",
     description: "Manage and track your shortened URLs with ease.",
-    images: ["/client/public/icon2.png"],
+    images: ["/client/public/img.webp"],
   },
   metadataBase: new URL("https://quicklink.soorajrao.in"),
 };
@@ -46,16 +46,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="robots" content="index, follow" />
-        <meta name="theme-color" content="#000000" />
-        <meta property="og:locale" content="en_US" />
-      </head>
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >

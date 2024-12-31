@@ -12,6 +12,13 @@ import { CopyIcon } from "@radix-ui/react-icons";
 import { siteMetaData } from "@/data/siteMetaData";
 import fetchData from "./fetchData";
 import { useZustandStore } from "./zustand.store";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export const Server = process.env.NEXT_PUBLIC_SERVER!;
 
@@ -89,42 +96,35 @@ const Home = () => {
   };
 
   return (
-    <div className=" h-[calc(100vh-200px)]  ">
+    <div className="container mx-auto px-4 py-8  h-[40rem] overflow-hidden flex flex-col justify-center">
       {QrDisplay && <QRCodeView setQrDisply={setQrDisplay} value={ShortUrl} />}
-      <h1
-        className={`scroll-m-20 text-center  mb-10 font-extrabold tracking-tight text-3xl px-2 sm:px-0 sm:text-4xl lg:text-6xl
-        ${Iscustom ? "mt-14 duration-" : "duratison-75 mt-20"}
-        `}
-      >
-        {URL?.long ? (
-          <span
-            className={` sm:text-4xl text-xl  font-bold tracking-normal 
-          ${ShortUrl ? " hidden  duration-0" : " duration-75  block"}
-         
-          `}
-          >
-            Shorten unlimited URLs here for free!
-          </span>
-        ) : (
-          <span>Quick Link : A Rapid URL Shortener</span>
-        )}
-      </h1>
-
-      <div className=" flex justify-center    ">
-        {!ShortUrl ? (
-          <form onSubmit={ShortenLongUrl}>
-            <div className="grid w-full  items-center gap-1.5 mt-10">
-              <Label htmlFor="url">Enter a long URL</Label>
-              <Input
-                value={URL.long}
-                onChange={handleChange}
-                name="long"
-                type="text"
-                placeholder="Your long URL here.."
-                className=" mt-2  sm:min-w-80 w-60 "
-              />
-              <div className=" flex my-2 gap-x-3 items-center">
+      <Card className="w-full max-w-xl mx-auto   border-none">
+        <CardHeader>
+          <CardTitle className="sm:text-3xl text-xl  font-bold text-center">
+            Make Your Links Short and Simple!
+          </CardTitle>
+          <CardDescription className=" text-center text-xs sm:text-base">
+            Shorten URLs for free, fast, and hassle-free
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {!ShortUrl ? (
+            <form onSubmit={ShortenLongUrl} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="url">Enter a long URL</Label>
+                <Input
+                  id="url"
+                  value={URL.long}
+                  onChange={handleChange}
+                  name="long"
+                  type="url"
+                  placeholder="Your long URL here..."
+                  className="w-full"
+                />
+              </div>
+              <div className="flex items-center space-x-2">
                 <Checkbox
+                  id="custom"
                   checked={Iscustom && URL.long ? true : false}
                   onCheckedChange={() => {
                     if (!URL.long)
@@ -136,89 +136,58 @@ const Home = () => {
                     setCustom(!Iscustom);
                   }}
                 />
-                <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                  Need Custom backhalf for URL
-                </label>
+                <Label htmlFor="custom" className="text-sm">
+                  Need custom backhalf for URL
+                </Label>
               </div>
-            </div>
-
-            <div
-              className={`  
-            ${
-              !Iscustom
-                ? "-translate-y-5 invisible duration-75 "
-                : " duration-300 translate-y-0 visible "
-            }
-            `}
-            >
-              <Input
-                value={URL.custom}
-                onChange={handleChange}
-                name="custom"
-                autoComplete="off"
-                placeholder="Enter custom backhalf "
-                className=" mt-2  sm:min-w-80 w-60 "
-              />
-              <h1
-                className={`  text-xs text-red-500 ml-2 mt-2 transform
-                ${
-                  Iscustom && URL.custom.length < 9
-                    ? " duration-300 translate-y-0 visible "
-                    : "-translate-y-2 invisible duration-75 "
-                }
-              `}
-              >
-                min 8 charcaters
-              </h1>
-              {Iscustom && (
-                <div className=" mt-6 max-w-[30rem]  shadow-lg p-3  border border-foreground/10  rounded-md">
-                  <h1 className=" text-sm font-semibold text-center ">
-                    Your custom URL will look like
-                  </h1>
+              {
+                <div
+                  className={`space-y-2 duration-200
+                ${Iscustom ? "h-48" : "h-0 invisible overflow-hidden"}
+                `}
+                >
                   <Input
-                    value={`${Server?.split("//")[1]}/${URL.custom}`}
-                    readOnly
-                    className="mt-3 cursor-not-allowed text-foreground  border border-foreground/10"
+                    value={URL.custom}
+                    onChange={handleChange}
+                    name="custom"
+                    autoComplete="off"
+                    placeholder="Enter custom backhalf"
+                    className="w-full"
                   />
+                  {URL.custom.length < 9 && (
+                    <p className="text-xs text-red-500">Min 8 characters</p>
+                  )}
+                  <div className="mt-2 p-3  rounded-md dark:bg-zinc-900 bg-zinc-100 ">
+                    <p className="text-sm font-semibold text-center">
+                      Your custom URL will look like
+                    </p>
+                    <Input
+                      value={`${Server?.split("//")[1]}/${URL.custom}`}
+                      readOnly
+                      className="mt-2 cursor-not-allowed text-muted-foreground"
+                    />
+                  </div>
                 </div>
-              )}
-            </div>
-            <div
-              className={`duration-200  ${
-                !Iscustom ? "-translate-y-14  " : "translate-y-0  "
-              }`}
-            >
-              <Button
-                type="submit"
-                disabled={loader}
-                className=" disabled:opacity-70  mt-4"
-              >
+              }
+              <Button type="submit" disabled={loader} className="w-full">
                 {!loader ? (
-                  "Submit"
+                  "Shorten URL"
                 ) : (
                   <>
                     Shortening..
-                    <Loader size={20} className="ml-1 animate-spin" />
+                    <Loader size={20} className="ml-2 animate-spin" />
                   </>
                 )}
               </Button>
-            </div>
-          </form>
-        ) : (
-          !loader && (
-            <div className="flex items-center justify-center p-4 sm:p-6 lg:p-8">
-              <div className="rounded-lg shadow-xl p-6 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl space-y-6">
-                <h1 className="text-xl sm:text-2xl font-bold text-center">
-                  Your Shortened URL is Ready!
-                </h1>
-
+            </form>
+          ) : (
+            !loader && (
+              <div className="space-y-4">
+                <h2 className=" text-sm sm:text-xl font-bold text-center">
+                  Your Shortened URL is Ready
+                </h2>
                 <div className="space-y-2">
-                  <label
-                    htmlFor="shortened-url"
-                    className="text-sm font-medium text-muted-foreground"
-                  >
-                    Shortened URL
-                  </label>
+                  <Label htmlFor="shortened-url">Shortened URL</Label>
                   <div className="flex">
                     <Input
                       id="shortened-url"
@@ -238,11 +207,9 @@ const Home = () => {
                     </Button>
                   </div>
                 </div>
-
                 <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
                   <Button
                     onClick={() => setQrDisplay(!QrDisplay)}
-                    variant="outline"
                     className="flex-1"
                   >
                     <QrCode className="h-4 w-4 mr-2" />
@@ -260,15 +227,11 @@ const Home = () => {
                     Create New URL
                   </Button>
                 </div>
-
-                <p className="text-center text-sm">
-                  Share your shortened URL with anyone, anywhere!
-                </p>
               </div>
-            </div>
-          )
-        )}
-      </div>
+            )
+          )}
+        </CardContent>
+      </Card>
       <Footer Ref={Ref} />
     </div>
   );
@@ -278,7 +241,7 @@ export default Home;
 
 export const Footer = ({ Ref }: { Ref: string }) => {
   return (
-    <footer>
+    <footer className="mt-8 text-center sm:text-sm text-xs text-muted-foreground">
       <a
         onClick={() =>
           fetchData(
@@ -289,10 +252,10 @@ export const Footer = ({ Ref }: { Ref: string }) => {
         }
         target="_blank"
         href={siteMetaData.portfolio}
-        className=" absolute  sm:hidden text-sm bottom-3 left-[50%] translate-x-[-50%] translate-y-[-50%]"
+        className="hover:underline"
       >
         Developed by
-        <span className=" cursor-pointer  ml-1 font-semibold">Sooraj</span>
+        <span className="font-semibold ml-1">Sooraj</span>
       </a>
     </footer>
   );

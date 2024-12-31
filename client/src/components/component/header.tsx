@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { AiOutlineBug } from "react-icons/ai";
-import { CodeXml } from "lucide-react";
+import { CodeXml, Menu } from "lucide-react";
 import Image from "next/image";
 import { ModeToggle } from "./toggle-theme";
 import icon from "../../../public/icon2.png";
@@ -10,80 +10,99 @@ import { usePathname } from "next/navigation";
 import { siteMetaData } from "@/data/siteMetaData";
 import fetchData from "./fetchData";
 import { useZustandStore } from "./zustand.store";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useState } from "react";
 
 export const Header = () => {
   const path = usePathname();
   const { Ref } = useZustandStore();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const SendData = (data: string) => {
     fetchData(data, Ref || "search", "quicklink-header", "none");
   };
 
-  return (
-    <header className=" flex justify-between sticky top-0  bg-background/70  backdrop-blur   shadow-md shadow-foreground/5  items-center px-4 sm:px-10  sm:py-4 py-2 dark:border-b  border-b-foreground/20 sm:mt-0  dark:shadow-none ">
-      <a href={"/"}>
-        <div className="  flex items-center gap-2   font-extrabold  tracking-tight first:mt-0">
-          <div className=" sm:block hidden scale-75 sm:scale-100 h-10 w-10 bg-white rounded-xl ">
-            <Image
-              src={icon}
-              width={100}
-              height={100}
-              alt=" "
-              className="  scale-[1.2] mt-[1px] "
-            />
-          </div>
-          <span className=" text-xl  sm:text-3xl ">QuickLink</span>
-        </div>
-      </a>
-      <div className="   flex items-center justify-end sm:gap-x-4    ">
-        <Link
-          href={"/"}
-          className={`
-        ${!path.includes("about") ? "hidden sm:block" : "block"}
-        `}
-        >
-          <Button
-            variant="ghost"
-            className=" py-2 px-4  text-xs sm:text-sm rounded flex items-center gap-x-3"
-          >
-            <span>Home</span>
-          </Button>
-        </Link>
-        <Link
-          onClick={() => SendData("click:about-page")}
-          href={"/about"}
-          className={`
-          ${path.includes("about") ? "hidden sm:block" : "block"}
-          `}
-        >
-          <Button
-            variant="ghost"
-            className=" py-2 px-4 text-xs sm:text-sm rounded flex items-center gap-x-3"
-          >
-            <span>About</span>
-          </Button>
-        </Link>
+  const NavLink = ({
+    href,
+    onClick,
+    children,
+  }: {
+    href: string;
+    onClick?: () => void;
+    children: React.ReactNode;
+  }) => (
+    <Link href={href} onClick={onClick}>
+      <Button
+        variant={`${href.includes("docs") ? "default" : "ghost"}`}
+        size="sm"
+        className="w-full  text-sm justify-start "
+      >
+        {children}
+      </Button>
+    </Link>
+  );
 
-        <a
-          onClick={() => SendData("click:report-issue")}
-          href={siteMetaData.report + "quicklink_header"}
-          target="_blank"
-        >
-          <Button
-            variant="ghost"
-            className=" py-2 px-4   text-xs sm:text-sm  rounded md:flex hidden items-center gap-x-2"
-          >
-            <span>Report an Issue</span>
-            <AiOutlineBug size={16} />
-          </Button>
-        </a>
-        <Link onClick={() => SendData("click:API-page")} href={"/docs/api"}>
-          <Button className=" scale-[.9] sm:flex hidden  text-xs sm:text-base    items-center gap-x-2 sm:gap-x-3">
-            <span>API</span>
-            <CodeXml size={20} />
-          </Button>
-        </Link>
+  const NavContent = () => (
+    <>
+      <NavLink href="/" onClick={() => setIsSidebarOpen(false)}>
+        Home
+      </NavLink>
+      <NavLink
+        href="/about"
+        onClick={() => {
+          SendData("click:about-page");
+          setIsSidebarOpen(false);
+        }}
+      >
+        About
+      </NavLink>
+      <NavLink
+        href={siteMetaData.report + "quicklink_header"}
+        onClick={() => {
+          SendData("click:report-issue");
+          setIsSidebarOpen(false);
+        }}
+      >
+        Report an Issue
+      </NavLink>
+      <NavLink
+        href="/docs/api"
+        onClick={() => {
+          SendData("click:API-page");
+          setIsSidebarOpen(false);
+        }}
+      >
+        API
+      </NavLink>
+    </>
+  );
+
+  return (
+    <header className="flex justify-between sticky top-0 bg-background/70 backdrop-blur shadow-md shadow-foreground/5 items-center px-4 sm:px-10 py-2 sm:py-4 dark:border-b border-b-foreground/20 dark:shadow-none z-50">
+      <Link
+        href="/"
+        className="flex items-center gap-2 font-extrabold tracking-tight"
+      >
+        <span className="text-xl sm:text-3xl">QuickLink</span>
+      </Link>
+      <div className="flex items-center justify-end gap-x-2 sm:gap-x-4">
+        <div className="hidden sm:flex items-center gap-x-2">
+          <NavContent />
+        </div>
         <ModeToggle />
+        <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon" className="sm:hidden">
+              <Menu />
+              <span className="sr-only">Toggle menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-[250px] sm:w-[300px]">
+            <nav className="flex flex-col gap-4 mt-8">
+              <NavContent />
+            </nav>
+          </SheetContent>
+        </Sheet>
       </div>
     </header>
   );

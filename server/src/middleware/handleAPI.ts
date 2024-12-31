@@ -26,8 +26,11 @@ export const ValidateAPI = async (
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return SendResponse(res, true, "API key is required");
   }
-
   const apikey = authHeader.split(" ")[1];
+
+  if (apikey === process.env.API_TOKEN) {
+    return SendResponse(res, true, "API key is required");
+  }
 
   const isValidApi = await ApiModel.findOne({ apikey });
 
