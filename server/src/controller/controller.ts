@@ -118,17 +118,19 @@ export const GetCount = async (req: Request, res: Response) => {
 };
 
 export const GetAll = async (req: Request, res: Response) => {
-  const { ref, count } = req.params;
+  const { ref, count } = req.query;
   if (ref === "srao") {
     let data;
 
     if (count) {
-      data = await Links.find().limit(parseInt(count));
+      data = await Links.find().limit(Number(count)).sort({ _id: -1 });
     } else {
-      data = await Links.find();
+      data = await Links.find().sort({ _id: -1 });
     }
 
     res.json(data);
+  } else {
+    res.json({ message: "Failed", data: { ref, count } });
   }
 };
 
