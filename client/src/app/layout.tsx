@@ -11,13 +11,7 @@ export const metadata: Metadata = {
   title: "QuickLink - URL Shortener | Simplify Your Links",
   description:
     "QuickLink is a powerful URL shortener that helps you manage, track, and simplify your links with ease.",
-  keywords: [
-    "URL shortener",
-    "link management",
-    "quick link",
-    "shorten URL",
-    "link tracking",
-  ],
+  metadataBase: new URL("https://quicklink.soorajrao.in"),
   authors: [{ name: "Sooraj Rao" }],
   creator: "Sooraj Rao",
   publisher: "Sooraj Rao",
@@ -27,29 +21,29 @@ export const metadata: Metadata = {
     telephone: false,
   },
   openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: "https://quicklink.soorajrao.in",
-    siteName: "QuickLink",
     title: "QuickLink - URL Shortener | Simplify Your Links",
     description:
       "Shorten, manage, and track your URLs efficiently with QuickLink.",
+    url: "https://quicklink.soorajrao.in",
+    siteName: "QuickLink",
     images: [
       {
-        url: "/client/public/img.webp",
+        url: "https://quicklink.soorajrao.in/client/public/img.webp",
         width: 1200,
         height: 630,
         alt: "QuickLink URL Shortener Preview",
       },
     ],
+    locale: "en_US",
+    type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "QuickLink - URL Shortener | Simplify Your Links",
     description:
       "Manage and track your shortened URLs with ease using QuickLink.",
-    images: ["/client/public/img.webp"],
     creator: "@SoorajRaoo",
+    images: ["https://quicklink.soorajrao.in/client/public/img.webp"],
   },
   robots: {
     index: true,
@@ -62,16 +56,29 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  metadataBase: new URL("https://quicklink.soorajrao.in"),
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
+  },
+  keywords: [
+    "URL shortener",
+    "link management",
+    "quick link",
+    "shorten URL",
+    "link tracking",
+    "QuickLink",
+  ],
+  category: "Technology",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"
