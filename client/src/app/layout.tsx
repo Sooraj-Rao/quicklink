@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     siteName: "QuickLink",
     images: [
       {
-        url: "https://quicklink.soorajrao.in/client/public/img.webp",
+        url: "https://quicklink.soorajrao.in/img.webp",
         width: 1200,
         height: 630,
         alt: "QuickLink URL Shortener Preview",
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     description:
       "Manage and track your shortened URLs with ease using QuickLink.",
     creator: "@SoorajRaoo",
-    images: ["https://quicklink.soorajrao.in/client/public/img.webp"],
+    images: ["https://quicklink.soorajrao.in/img.webp"],
   },
   robots: {
     index: true,
