@@ -7,8 +7,10 @@ import {
   Validator,
 } from "../utils/helper";
 import { RequestWithData } from "../middleware";
+import NodeCache from "node-cache";
 
 const Link = process.env.LINK!;
+const urlCache = new NodeCache({ stdTTL: 300 });
 
 export const AddURL = async (req: RequestWithData, res: Response) => {
   try {
@@ -66,10 +68,20 @@ export const AddURL = async (req: RequestWithData, res: Response) => {
 export const GetURL = async (req: Request, res: Response) => {
   try {
     const { short } = req.params;
+    const cachedUrl = urlCache.get(short) as string | undefined;
+    if (cachedUrl) {
+      console.log("Cache hit for:", short);
+      const redirectUrl = cachedUrl.startsWith("http")
+        ? cachedUrl
+        : `http://${cachedUrl}`;
+      return res.redirect(redirectUrl);
+    }
     const findUrl = await updateUrlHistory(short);
     if (findUrl) {
       const url = findUrl?.long;
       if (url) {
+        urlCache.set(short, url);
+
         const redirectUrl = url.startsWith("http") ? url : `http://${url}`;
         return res.redirect(redirectUrl);
       }
