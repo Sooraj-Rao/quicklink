@@ -13,6 +13,7 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(limiter)
 app.use(express.json());
+app.set("trust proxy", 1); 
 
 (async () => {
   try {
