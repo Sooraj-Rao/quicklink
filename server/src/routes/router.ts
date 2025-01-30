@@ -6,7 +6,7 @@ import {
   GetAllApiUrl,
   GetCount,
   GetURL,
-  Redirect,
+  RedirectToApp,
 } from "../controller";
 import { ValidateAPI } from "../middleware/handleAPI";
 export const router = express.Router();
@@ -19,4 +19,4 @@ router.get("/api/getall", ValidateAPI, GetAllApiUrl);
 
 router.get("/:short", GetURL);
 router.get("/api/all", GetAll);
-router.get("/*", Redirect);
+router.get("/*", RedirectToApp);

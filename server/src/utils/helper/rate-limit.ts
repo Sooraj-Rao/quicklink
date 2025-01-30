@@ -2,8 +2,8 @@ import rateLimit from "express-rate-limit";
 import path from "path";
 
 export const limiter = rateLimit({
-  windowMs: 1 * 60 * 1000,
-  max: 5,
+  windowMs: 5 * 60 * 1000,
+  max: 20,
   handler: (req, res) => {
     res
       .status(429)
