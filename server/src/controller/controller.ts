@@ -8,8 +8,8 @@ import {
 } from "../utils/helper";
 import { RequestWithData } from "../middleware";
 import NodeCache from "node-cache";
+import path from "path";
 
-const Link = process.env.LINK!;
 const urlCache = new NodeCache({ stdTTL: 300 });
 
 export const AddURL = async (req: RequestWithData, res: Response) => {
@@ -86,7 +86,7 @@ export const GetURL = async (req: Request, res: Response) => {
         return res.redirect(redirectUrl);
       }
     }
-    return SendResponse(res, true, StatusMessages["404"]);
+    return Redirect(req, res);
   } catch (error) {
     console.error("Error in GetURL:", error);
     return SendResponse(res, true, StatusMessages["500"]);
@@ -98,7 +98,7 @@ export const GetCount = async (req: Request, res: Response) => {
     const { short } = req.params;
     const existingUrlCount = await Links.findOne({ short });
     if (!existingUrlCount) {
-      return SendResponse(res, true, StatusMessages["404"]);
+      return Redirect(req, res);
     }
 
     const url = existingUrlCount;
@@ -114,7 +114,7 @@ export const GetCount = async (req: Request, res: Response) => {
         : fetchNormalTime[fetchNormalTime?.length - 1];
 
     if (!url) {
-      return SendResponse(res, true, StatusMessages["404"]);
+      return Redirect(req, res);
     }
 
     SendResponse(res, false, "Click count retrieved", {
@@ -203,8 +203,8 @@ export const CreateApiKey = async (_: Request, res: Response) => {
   }
 };
 
-export const Redirect = (_: Request, res: Response): void => {
-  return res.redirect(Link);
+export const Redirect = (_: Request, res: Response) => {
+  res.status(404).sendFile(path.join(__dirname, "../html/404-page.html"));
 };
 
 export const SendResponse = (
