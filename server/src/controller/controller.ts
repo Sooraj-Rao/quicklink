@@ -12,7 +12,6 @@ import path from "path";
 
 const urlCache = new NodeCache({ stdTTL: 300 });
 
-
 export const AddURL = async (req: RequestWithData, res: Response) => {
   try {
     const { long, custom: short, key } = req.body;
@@ -124,7 +123,6 @@ export const GetCount = async (req: Request, res: Response) => {
       "Click count retrieved",
 
       {
-        timeZone: "Asia/Kolkata",
         shortUrl: CompleteURL(short, false),
         lastClicked,
         clicks: url?.history?.length,

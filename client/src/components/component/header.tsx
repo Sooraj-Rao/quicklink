@@ -26,17 +26,22 @@ export const Header = () => {
     href,
     onClick,
     children,
+    target = "_self",
+    icon = null,
   }: {
     href: string;
     onClick?: () => void;
+    target?: string;
+    icon?: React.ReactNode;
     children: React.ReactNode;
   }) => (
-    <Link href={href} onClick={onClick}>
+    <Link target={target} href={href} onClick={onClick}>
       <Button
         variant={`${href.includes("docs") ? "default" : "ghost"}`}
         size="sm"
         className="w-full text-sm justify-start "
       >
+        {icon && <span className="mr-2">{icon}</span>}
         {children}
       </Button>
     </Link>
@@ -57,6 +62,7 @@ export const Header = () => {
         About
       </NavLink>
       <NavLink
+        target={"_blank"}
         href={siteMetaData.report + "quicklink_header"}
         onClick={() => {
           SendData("click:report-issue");
@@ -66,6 +72,7 @@ export const Header = () => {
         Report an Issue
       </NavLink>
       <NavLink
+        icon={<CodeXml className="h-4 w-4" />}
         href="/docs/api"
         onClick={() => {
           SendData("click:API-page");

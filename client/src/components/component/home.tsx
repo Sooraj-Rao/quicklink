@@ -96,7 +96,7 @@ const Home = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8  h-[40rem] overflow-hidden flex flex-col justify-center">
+    <div className="container mx-auto px-4 py-8  h-[35rem] overflow-hidden flex flex-col justify-center">
       {QrDisplay && <QRCodeView setQrDisply={setQrDisplay} value={ShortUrl} />}
       <Card className="w-full max-w-xl mx-auto   border-none">
         <CardHeader>
@@ -241,7 +241,7 @@ export default Home;
 
 export const Footer = ({ Ref }: { Ref: string }) => {
   return (
-    <footer className="mt-8 text-center sm:text-sm text-xs text-muted-foreground">
+    <footer className="mt-12 text-center sm:text-sm text-xs text-muted-foreground">
       <a
         onClick={() =>
           fetchData(

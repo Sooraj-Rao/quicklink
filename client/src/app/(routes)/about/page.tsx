@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import fetchData from "@/components/component/fetchData";
 import { useZustandStore } from "@/components/component/zustand.store";
 import { siteMetaData } from "@/data/siteMetaData";
+import { MessageCircle } from "lucide-react";
 
 export default function AboutPage() {
   const { Ref } = useZustandStore();
@@ -47,14 +48,14 @@ export default function AboutPage() {
       </Card>
 
       <hr className=" dark:border-foreground/20" />
-      <div className=" m-3  flex gap-x-5  items-center">
+      <div className=" m-3  mt-6 flex gap-x-5  items-center">
         <span className="sm:text-sm text-xs">Get in touch</span>
         <a target="_blank" href={siteMetaData.contact}>
           <Button
             onClick={() => SendData("click_contact_about")}
-            className="sm:text-sm text-xs"
-            variant="secondary"
+            className="sm:text-sm text-xs flex gap-2 items-center"
           >
+            <MessageCircle size={15} />
             Contact
           </Button>
         </a>
