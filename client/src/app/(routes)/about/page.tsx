@@ -1,13 +1,9 @@
 "use client";
-import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { siteMetaData } from "@/data/siteMetaData";
-import { LinkedInLogoIcon } from "@radix-ui/react-icons";
-import { IoMdMail } from "react-icons/io";
-import { IoMdChatboxes } from "react-icons/io";
-import { PiCursorClickFill } from "react-icons/pi";
 import fetchData from "@/components/component/fetchData";
 import { useZustandStore } from "@/components/component/zustand.store";
+import { siteMetaData } from "@/data/siteMetaData";
 
 export default function AboutPage() {
   const { Ref } = useZustandStore();
@@ -15,93 +11,53 @@ export default function AboutPage() {
   const SendData = (data: string) => {
     fetchData(data, Ref || "search", "quicklink-about", "none");
   };
-  
+
   return (
-    <div className="max-w-3xl mx-auto p-4 text-xs sm:text-base ">
-      <div className="mb-2 border-transparent">
+    <div className="max-w-3xl mx-auto p-4  ">
+      <Card className="mb-2 border-none shadow-none">
         <CardHeader>
           <CardTitle className=" text-base ">About QuickLink</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="  text-muted-foreground">
           <p className=" mb-2">
-            QuickLink is a powerful and easy-to-use URL shortening service
-            designed to make sharing long URLs quick and effortless. With
-            customizable backhalves, API access, and tracking features, you can
-            manage and monitor your links efficiently.
+            QuickLink is a simple URL shortening service that turns long links
+            into short, easy-to-share URLs. It offers custom backhalves, API
+            access, and link tracking to make managing your links effortless.
           </p>
           <p className="">
-            Whether {"you're"} a developer looking for a seamless way to
-            integrate URL shortening into your application or a user wanting to
-            share cleaner, shorter URLs, QuickLink has got you covered.
+            QuickLink helps you share clean, short links with ease whether
+            you&apos;re a developer or just looking to simplify your URLs.
           </p>
         </CardContent>
-      </div>
+      </Card>
       <hr className=" dark:border-foreground/20" />
-      <div className="mb-2">
+      <Card className="mb-2 border-none shadow-none">
         <CardHeader>
-          <CardTitle className="text-base ">Contact Us</CardTitle>
+          <CardTitle className=" text-base ">Features</CardTitle>
         </CardHeader>
-        <CardContent>
-          <p className="mb-2">
-            Have any questions, feedback, or issues? {"We're"} here to help!
-          </p>
-
-          <div className="mt-4 flex space-x-4">
-            <Button asChild variant="outline" className=" flex gap-x-3 ">
-              <a
-                onClick={() => SendData("open-contact-us")}
-                href={siteMetaData.contact + "quicklink_about"}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <IoMdChatboxes className="h-5 w-5" />
-                Contact Us
-              </a>
-            </Button>
-          </div>
+        <CardContent className="  text-muted-foreground">
+          <ul className="list-disc ml-5">
+            <li>Customizable link backhalves</li>
+            <li>API access for developers</li>
+            <li>Link analytics and tracking</li>
+            <li>Easy integration with existing applications</li>
+            <li>Fast and simple to use</li>
+          </ul>
         </CardContent>
-      </div>
+      </Card>
+
       <hr className=" dark:border-foreground/20" />
-      <div className="mb-2">
-        <CardHeader>
-          <CardTitle className="text-base ">Socials</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="mb-2">Reach me out here!</p>
-
-          <div className="mt-6 flex space-x-4">
-            <Button title="mail" asChild variant="outline" size="icon">
-              <a
-                onClick={() => SendData("open-mail")}
-                href={siteMetaData.mail}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <IoMdMail className="h-5 w-5" />
-              </a>
-            </Button>
-            <Button title="linkedin" asChild variant="outline" size="icon">
-              <a
-                onClick={() => SendData("open-linkedin")}
-                href={siteMetaData.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <LinkedInLogoIcon className="h-5 w-5" />
-              </a>
-            </Button>
-            <Button title="portfolio" asChild variant="outline" size="icon">
-              <a
-                onClick={() => SendData("open-portfolio")}
-                href={siteMetaData.portfolio}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <PiCursorClickFill className=" rotate-90 h-5 w-5" />
-              </a>
-            </Button>
-          </div>
-        </CardContent>
+      <div className=" m-3  flex gap-x-5  items-center">
+        <span className="sm:text-sm text-xs">Get in touch</span>
+        <a target="_blank" href={siteMetaData.contact}>
+          <Button
+            onClick={() => SendData("click_contact_about")}
+            className="sm:text-sm text-xs"
+            variant="secondary"
+          >
+            Contact
+          </Button>
+        </a>
       </div>
     </div>
   );

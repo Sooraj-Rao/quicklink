@@ -213,7 +213,7 @@ export default function ApiPage() {
               <b>shortUrl</b> - The shortened URL you want to track <br />
               <b>clicks</b> - Number of times the URL has been clicked <br />
               <b>lastClicked</b> - Timestamp of the last click <br />
-              <b>timestamp</b> - The list of click timestamps
+              <b>timestamp</b> - The list of click timestamps (timezone: Asia/Kolkata)
             </p>
           </div>
           <hr className=" my-6" />

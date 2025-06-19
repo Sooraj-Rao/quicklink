@@ -12,6 +12,7 @@ import path from "path";
 
 const urlCache = new NodeCache({ stdTTL: 300 });
 
+
 export const AddURL = async (req: RequestWithData, res: Response) => {
   try {
     const { long, custom: short, key } = req.body;
@@ -82,7 +83,7 @@ export const GetURL = async (req: Request, res: Response) => {
       if (url) {
         urlCache.set(short, url);
 
-        const redirectUrl = url.startsWith("http") ? url : `http://${url}`;
+        const redirectUrl = url.startsWith("http") ? url : `https://${url}`;
         return res.redirect(redirectUrl);
       }
     }
@@ -105,7 +106,7 @@ export const GetCount = async (req: Request, res: Response) => {
     const fetchNormalTime =
       url?.history?.map((item, i) => {
         const date = new Date(item?.timeStamp);
-        return date.toLocaleString();
+        return date.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
       }) || [];
 
     const lastClicked =
@@ -117,12 +118,19 @@ export const GetCount = async (req: Request, res: Response) => {
       return RedirectNotFound(req, res);
     }
 
-    SendResponse(res, false, "Click count retrieved", {
-      shortUrl: CompleteURL(short, false),
-      lastClicked,
-      clicks: url?.history?.length,
-      timestamp: fetchNormalTime,
-    });
+    SendResponse(
+      res,
+      false,
+      "Click count retrieved",
+
+      {
+        timeZone: "Asia/Kolkata",
+        shortUrl: CompleteURL(short, false),
+        lastClicked,
+        clicks: url?.history?.length,
+        timestamp: fetchNormalTime,
+      }
+    );
   } catch (error) {
     console.log(error);
     return SendResponse(res, true, StatusMessages["500"]);
@@ -157,7 +165,7 @@ export const GetAllApiUrl = async (req: RequestWithData, res: Response) => {
       const times =
         item?.history?.map((item, i) => {
           const date = new Date(item?.timeStamp);
-          return date.toLocaleString();
+          return date.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
         }) || [];
 
       return {

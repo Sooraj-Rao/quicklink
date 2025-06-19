@@ -1,8 +1,6 @@
 export const siteMetaData = {
   portfolio: "https://soorajrao.in/?ref=quicklink",
   contact:
-    "https://contact.soorajrao.in?mode=contact&app=quicklink&utm_source=",
-  report: "https://contact.soorajrao.in?mode=report&app=quicklink&utm_source=",
-  mail: "mailto:soorajrao630@gmail.com",
-  linkedin: "https://www.linkedin.com/in/sooraj-rao",
+    "https://contact.soorajrao.in?querytype=contact&utm_source=quicklink&message=i want you to assign a project&utm_medium=",
+  report: "https://contact.soorajrao.in?querytype=report a issue&utm_source=quicklink&message=i want you to report a issue&utm_medium=",
 };
