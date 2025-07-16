@@ -9,8 +9,6 @@ const fetchData = async (
   utm_source?: string,
   additionalData?: string
 ) => {
-  const key = process.env.NEXT_PUBLIC_USER_KEY!;
-  if (localStorage.getItem(key) === key) return;
   const token = Cookies.get(eventType);
   if (token == eventType) return;
   if (ref === process.env.NEXT_PUBLIC_USER!) return;

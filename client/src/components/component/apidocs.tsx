@@ -161,7 +161,7 @@ export default function ApiPage() {
             </pre>
             <p className="mb-4 text-sm">
               <b>size</b> - Size refers to the number of characters in the link.
-              By default, it is 10
+              By default, it is 6
             </p>
             <h4 className="font-semibold mb-2">
               Response{" "}

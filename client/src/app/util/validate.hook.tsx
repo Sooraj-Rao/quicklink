@@ -6,9 +6,9 @@ type T_URL = {
 export const Validator = (
   URL: T_URL,
   isCustom: boolean,
-  isAdmin: string | null
+  isAdmin?: string | null
 ) => {
-  if (isAdmin) return { error: false };
+  if (isAdmin == process.env.NEXT_PUBLIC_USER) return { error: false };
   const { long, custom } = URL;
 
   if (isCustom) {

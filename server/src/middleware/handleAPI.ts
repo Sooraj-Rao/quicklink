@@ -38,7 +38,7 @@ export const ValidateAPI = async (
     return SendResponse(res, true, "Invalid API key");
   }
 
-  const validSize = req.query.size ? Number(req.query.size) : 8;
+  const validSize = req.query.size ? Number(req.query.size) : 6;
 
   req.data = {
     apikey,

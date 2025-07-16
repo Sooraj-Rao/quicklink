@@ -1,5 +1,11 @@
 "use client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import fetchData from "@/components/component/fetchData";
 import { useZustandStore } from "@/components/component/zustand.store";
@@ -48,18 +54,20 @@ export default function AboutPage() {
       </Card>
 
       <hr className=" dark:border-foreground/20" />
-      <div className=" m-3  mt-6 flex gap-x-5  items-center">
-        <span className="sm:text-sm text-xs">Get in touch</span>
-        <a target="_blank" href={siteMetaData.contact}>
-          <Button
-            onClick={() => SendData("click_contact_about")}
-            className="sm:text-sm text-xs flex gap-2 items-center"
-          >
-            <MessageCircle size={15} />
-            Contact
-          </Button>
-        </a>
-      </div>
+      <Card className=" m-3 px-2  mt-6 flex flex-col  gap-x-5  items-start gap-4 border-none ">
+        <CardTitle className="sm:text-sms tsext-xs">Get in touch</CardTitle>
+        <CardDescription>
+          <a target="_blank" href={siteMetaData.contact}>
+            <Button
+              onClick={() => SendData("click_contact_about")}
+              className="sm:text-sm text-xs flex gap-2 items-center"
+            >
+              <MessageCircle size={15} />
+              Contact
+            </Button>
+          </a>
+        </CardDescription>
+      </Card>
     </div>
   );
 }

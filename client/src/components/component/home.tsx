@@ -45,13 +45,10 @@ const Home = () => {
     });
   };
 
-  const user = process.env.NEXT_PUBLIC_OWNER;
-
   const ShortenLongUrl = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const item = localStorage.getItem(user || "");
-    const isAdmin = user === item ? user : null;
-    const { error } = Validator(URL, Iscustom, isAdmin);
+
+    const { error } = Validator(URL, Iscustom, Ref);
 
     if (error) {
       return toast({
@@ -67,7 +64,7 @@ const Home = () => {
           Authorization: `Bearer ${"ilnMxRHMWwNIWhvsvFHpxufJ"}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...URL, key: isAdmin }),
+        body: JSON.stringify({ ...URL, key: Ref }),
       });
       const respose = await res.json();
       const { error, message, data } = respose;
@@ -96,7 +93,7 @@ const Home = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8  h-[35rem] overflow-hidden flex flex-col justify-center">
+    <div className=" mx-auto px-4 py-8  h-[35rem] overflosw-hidden flex flex-col justify-center">
       {QrDisplay && <QRCodeView setQrDisply={setQrDisplay} value={ShortUrl} />}
       <Card className="w-full max-w-xl mx-auto   border-none">
         <CardHeader>
@@ -241,7 +238,7 @@ export default Home;
 
 export const Footer = ({ Ref }: { Ref: string }) => {
   return (
-    <footer className="mt-12 text-center sm:text-sm text-xs text-muted-foreground">
+    <footer className=" p-5 fixed   bg-background bottom-0 left-0 text-center sm:text-sm  w-full text-xs text-muted-foreground">
       <a
         onClick={() =>
           fetchData(
