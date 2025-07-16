@@ -157,7 +157,7 @@ export default function ApiPage() {
               </span>
             </h4>
             <pre className="bg-muted p-2 rounded mb-4 overflow-x-scroll  sm:overflow-auto">
-              {`https://sj1.xyz/api?size=15`}
+              {`https://srao.site/api?size=15`}
             </pre>
             <p className="mb-4 text-sm">
               <b>size</b> - Size refers to the number of characters in the link.
@@ -199,7 +199,7 @@ export default function ApiPage() {
   "error": false,
   "message": "Click count retrieved",
   "data": {
-    "shortUrl": "https://sj1.xyz/ju5whysf",
+    "shortUrl": "https://srao.site/ju5whysf",
     "clicks": 2,
     "lastClicked": "25/08/2024, 11:48:20",
     "timestamp": [
@@ -238,12 +238,12 @@ export default function ApiPage() {
   "message": "Success",
   "data": [
     {
-      "shortUrl": "https://sj1.xyz/bwvsjzvS",
+      "shortUrl": "https://srao.site/bwvsjzvS",
       "longUrl": "https://example.com",
       "clickHistory": "No clicks yet"
     },
     {
-      "shortUrl": "https://sj1.xyz/lYScRgyv",
+      "shortUrl": "https://srao.site/lYScRgyv",
       "longUrl": "https://example2.com",
       "clickHistory": [
         "26/08/2024, 19:15:05",
@@ -277,7 +277,7 @@ export default function ApiPage() {
             </TabsList>
             <TabsContent value="curl">
               <pre className="bg-muted p-2 rounded overflow-x-scroll sm:overflow-auto">
-                {`curl -X POST https://sj1.xyz/api \\
+                {`curl -X POST https://srao.site/api \\
   -H "Authorization: Bearer YOUR_API_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{"long": "https://example.com/very-long-url-that-needs-shortening"}'`}
@@ -291,7 +291,7 @@ api_key = "YOUR_API_KEY"
 url = "https://example.com/very-long-url-that-needs-shortening"
 
 response = requests.post(
-    "https://sj1.xyz/api",
+    "https://srao.site/api",
     headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
     json={"long": url}
 )
@@ -304,7 +304,7 @@ print(response.json()["data"]["shortUrl"])`}
                 {`const apiKey = "YOUR_API_KEY";
 const url = "https://example.com/very-long-url-that-needs-shortening";
 
-fetch("https://sj1.xyz/api", {
+fetch("https://srao.site/api", {
   method: "POST",
   headers: {
     "Authorization": \`Bearer \${apiKey}\`,
